@@ -1,0 +1,13 @@
+# JetBrains IDEs
+.idea
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv
+**/venv/
+
+# Kotlin
+.gradle
+**/build/
