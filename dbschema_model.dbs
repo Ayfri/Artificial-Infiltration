@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project name="Artificial Infiltration" id="Project-f47" database="MySql" >
 	<schema name="artificial infiltration" >
+		<table name="badges" prior="tbl" >
+			<column name="badge_id" prior="id" type="INT" jt="4" mandatory="y" unsigned="y" />
+			<column name="user_id" type="INT" jt="4" mandatory="y" unsigned="y" />
+			<index name="unq_badges_user_id" unique="UNIQUE_KEY" >
+				<column name="user_id" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
 		<table name="game_members" prior="tbl" >
 			<column name="game_id" type="INT" jt="4" mandatory="y" unsigned="y" />
 			<column name="member_id" type="INT" jt="4" mandatory="y" unsigned="y" />
+			<column name="timestamp" type="TIMESTAMP" jt="93" mandatory="y" >
+				<defo><![CDATA[CURRENT_TIMESTAMP]]></defo>
+			</column>
 			<index name="unq_game_members_game_id" unique="UNIQUE_KEY" >
 				<column name="game_id" />
 			</index>
@@ -14,6 +25,9 @@
 		</table>
 		<table name="games" prior="game" >
 			<column name="id" type="INT" jt="4" mandatory="y" unsigned="y" />
+			<column name="timestamp" type="TIMESTAMP" jt="93" mandatory="y" >
+				<defo><![CDATA[CURRENT_TIMESTAMP]]></defo>
+			</column>
 			<index name="pk_games" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
@@ -26,6 +40,9 @@
 			<fk name="fk_games_messages" to_schema="artificial infiltration" to_table="messages" delete_action="cascade" update_action="cascade" >
 				<fk_column name="id" pk="game_id" />
 			</fk>
+			<fk name="fk_games_votes" to_schema="artificial infiltration" to_table="votes" delete_action="cascade" update_action="cascade" >
+				<fk_column name="id" pk="game_id" />
+			</fk>
 			<options><![CDATA[engine=InnoDB]]></options>
 		</table>
 		<table name="messages" prior="message" >
@@ -33,6 +50,9 @@
 			<column name="content" type="VARCHAR" length="140" jt="12" mandatory="y" />
 			<column name="author_id" type="INT" jt="4" mandatory="y" unsigned="y" />
 			<column name="game_id" type="INT" jt="4" mandatory="y" unsigned="y" />
+			<column name="timestamp" type="TIMESTAMP" jt="93" >
+				<defo><![CDATA[CURRENT_TIMESTAMP]]></defo>
+			</column>
 			<index name="pk_messages" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
@@ -47,6 +67,7 @@
 		<table name="user_games" prior="users_games" >
 			<column name="user_id" type="INT" jt="4" mandatory="y" unsigned="y" />
 			<column name="game_id" type="INT" jt="4" mandatory="y" unsigned="y" />
+			<column name="points" type="INT" jt="4" mandatory="y" unsigned="y" />
 			<index name="unq_users_games_game_id" unique="UNIQUE_KEY" >
 				<column name="game_id" />
 			</index>
@@ -71,14 +92,43 @@
 			<fk name="fk_users_game_members" to_schema="artificial infiltration" to_table="game_members" delete_action="cascade" update_action="cascade" >
 				<fk_column name="id" pk="member_id" />
 			</fk>
+			<fk name="fk_users_badges" to_schema="artificial infiltration" to_table="badges" delete_action="cascade" update_action="cascade" >
+				<fk_column name="id" pk="user_id" />
+			</fk>
+			<fk name="fk_users_votes" to_schema="artificial infiltration" to_table="votes" delete_action="cascade" update_action="cascade" >
+				<fk_column name="id" pk="author_id" />
+			</fk>
+			<fk name="fk_users_votes_0" to_schema="artificial infiltration" to_table="votes" delete_action="cascade" update_action="cascade" >
+				<fk_column name="id" pk="target_id" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="votes" prior="tbl" >
+			<column name="id" type="INT" jt="4" mandatory="y" unsigned="y" />
+			<column name="author_id" prior="user_id" type="INT" jt="4" mandatory="y" unsigned="y" />
+			<column name="game_id" type="INT" jt="4" mandatory="y" unsigned="y" />
+			<column name="target_id" type="INT" jt="4" mandatory="y" unsigned="y" />
+			<index name="pk_votes" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="unq_votes_author_id" unique="UNIQUE_KEY" >
+				<column name="author_id" />
+			</index>
+			<index name="unq_votes_target_id" unique="UNIQUE_KEY" >
+				<column name="target_id" />
+			</index>
+			<index name="unq_votes_game_id" unique="UNIQUE_KEY" >
+				<column name="game_id" />
+			</index>
 			<options><![CDATA[engine=InnoDB]]></options>
 		</table>
 	</schema>
 	<layout name="Default Layout" id="Layout-21f" joined_routing="y" show_column_type="y" show_relation="name" >
-		<entity schema="artificial infiltration" name="game_members" color="C1D8EE" x="224" y="416" />
-		<entity schema="artificial infiltration" name="games" color="C1D8EE" x="192" y="736" />
-		<entity schema="artificial infiltration" name="messages" color="C1D8EE" x="704" y="400" />
-		<entity schema="artificial infiltration" name="user_games" color="C1D8EE" x="80" y="416" />
-		<entity schema="artificial infiltration" name="users" color="C1D8EE" x="48" y="48" />
+		<entity schema="artificial infiltration" name="badges" color="C1D8EE" x="208" y="48" />
+		<entity schema="artificial infiltration" name="games" color="C1D8EE" x="96" y="608" />
+		<entity schema="artificial infiltration" name="messages" color="C1D8EE" x="464" y="384" />
+		<entity schema="artificial infiltration" name="user_games" color="C1D8EE" x="48" y="400" />
+		<entity schema="artificial infiltration" name="users" color="C1D8EE" x="128" y="224" />
+		<entity schema="artificial infiltration" name="votes" color="C1D8EE" x="640" y="192" />
 	</layout>
 </project>
