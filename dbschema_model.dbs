@@ -9,22 +9,10 @@
 			</index>
 			<options><![CDATA[engine=InnoDB]]></options>
 		</table>
-		<table name="game_members" prior="tbl" >
-			<column name="game_id" type="INT" jt="4" mandatory="y" unsigned="y" />
-			<column name="member_id" type="INT" jt="4" mandatory="y" unsigned="y" />
-			<column name="timestamp" type="TIMESTAMP" jt="93" mandatory="y" >
-				<defo><![CDATA[CURRENT_TIMESTAMP]]></defo>
-			</column>
-			<index name="unq_game_members_game_id" unique="UNIQUE_KEY" >
-				<column name="game_id" />
-			</index>
-			<index name="unq_game_members_member_id" unique="UNIQUE_KEY" >
-				<column name="member_id" />
-			</index>
-			<options><![CDATA[engine=InnoDB]]></options>
-		</table>
 		<table name="games" prior="game" >
-			<column name="id" type="INT" jt="4" mandatory="y" unsigned="y" />
+			<column name="id" type="INT" jt="4" mandatory="y" unsigned="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
 			<column name="timestamp" type="TIMESTAMP" jt="93" mandatory="y" >
 				<defo><![CDATA[CURRENT_TIMESTAMP]]></defo>
 			</column>
@@ -32,9 +20,6 @@
 				<column name="id" />
 			</index>
 			<fk name="fk_games_users_games" to_schema="artificial infiltration" to_table="user_games" delete_action="cascade" update_action="cascade" >
-				<fk_column name="id" pk="game_id" />
-			</fk>
-			<fk name="fk_games_game_members" to_schema="artificial infiltration" to_table="game_members" delete_action="cascade" update_action="cascade" >
 				<fk_column name="id" pk="game_id" />
 			</fk>
 			<fk name="fk_games_messages" to_schema="artificial infiltration" to_table="messages" delete_action="cascade" update_action="cascade" >
@@ -46,7 +31,9 @@
 			<options><![CDATA[engine=InnoDB]]></options>
 		</table>
 		<table name="messages" prior="message" >
-			<column name="id" type="INT" jt="4" mandatory="y" unsigned="y" />
+			<column name="id" type="INT" jt="4" mandatory="y" unsigned="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
 			<column name="content" type="VARCHAR" length="140" jt="12" mandatory="y" />
 			<column name="author_id" type="INT" jt="4" mandatory="y" unsigned="y" />
 			<column name="game_id" type="INT" jt="4" mandatory="y" unsigned="y" />
@@ -77,7 +64,9 @@
 			<options><![CDATA[engine=InnoDB]]></options>
 		</table>
 		<table name="users" prior="tbl" >
-			<column name="id" type="INT" jt="4" mandatory="y" unsigned="y" />
+			<column name="id" type="INT" jt="4" mandatory="y" unsigned="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
 			<column name="username" type="VARCHAR" length="32" jt="12" mandatory="y" />
 			<column name="password" type="VARCHAR" length="64" jt="12" mandatory="y" />
 			<index name="pk_users" unique="PRIMARY_KEY" >
@@ -88,9 +77,6 @@
 			</fk>
 			<fk name="fk_users_users_games" to_schema="artificial infiltration" to_table="user_games" delete_action="cascade" update_action="cascade" >
 				<fk_column name="id" pk="user_id" />
-			</fk>
-			<fk name="fk_users_game_members" to_schema="artificial infiltration" to_table="game_members" delete_action="cascade" update_action="cascade" >
-				<fk_column name="id" pk="member_id" />
 			</fk>
 			<fk name="fk_users_badges" to_schema="artificial infiltration" to_table="badges" delete_action="cascade" update_action="cascade" >
 				<fk_column name="id" pk="user_id" />
@@ -104,7 +90,9 @@
 			<options><![CDATA[engine=InnoDB]]></options>
 		</table>
 		<table name="votes" prior="tbl" >
-			<column name="id" type="INT" jt="4" mandatory="y" unsigned="y" />
+			<column name="id" type="INT" jt="4" mandatory="y" unsigned="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
 			<column name="author_id" prior="user_id" type="INT" jt="4" mandatory="y" unsigned="y" />
 			<column name="game_id" type="INT" jt="4" mandatory="y" unsigned="y" />
 			<column name="target_id" type="INT" jt="4" mandatory="y" unsigned="y" />
@@ -123,7 +111,8 @@
 			<options><![CDATA[engine=InnoDB]]></options>
 		</table>
 	</schema>
-	<layout name="Default Layout" id="Layout-21f" joined_routing="y" show_column_type="y" show_relation="name" >
+	<connector name="MariaDb" database="MariaDb" driver_class="org.mariadb.jdbc.Driver" driver_jar="mariadb-java-client-3.1.2.jar" driver_desc="Standard" host="localhost" port="3307" instance="artificial_infiltration" user="root" useSystemProxy="false" />
+	<layout name="Default Layout" id="Layout-21f" show_column_type="y" show_relation="name" >
 		<entity schema="artificial infiltration" name="badges" color="C1D8EE" x="208" y="48" />
 		<entity schema="artificial infiltration" name="games" color="C1D8EE" x="96" y="608" />
 		<entity schema="artificial infiltration" name="messages" color="C1D8EE" x="464" y="384" />
