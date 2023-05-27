@@ -42,3 +42,7 @@ dependencies {
 	implementation("org.komapper:komapper-dialect-mariadb-jdbc")
 	ksp("org.komapper:komapper-processor")
 }
+
+ksp {
+	arg("komapper.metaObject", "io.github.aifiltration.database.Tables")
+}
