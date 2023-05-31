@@ -38,8 +38,8 @@ dependencies {
 		implementation(it)
 		ksp(it)
 	}
-	implementation("org.komapper:komapper-starter-jdbc")
-	implementation("org.komapper:komapper-dialect-mariadb-jdbc")
+	implementation("org.komapper:komapper-starter-r2dbc")
+	implementation("org.komapper:komapper-dialect-mariadb-r2dbc")
 	ksp("org.komapper:komapper-processor")
 }
 
