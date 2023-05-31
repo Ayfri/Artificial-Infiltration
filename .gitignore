@@ -11,3 +11,6 @@ __pycache__/
 # Kotlin
 .gradle
 **/build/
+
+# Environment configurations
+**/.env
