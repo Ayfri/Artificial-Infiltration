@@ -1,7 +1,7 @@
 package io.github.aifiltration.models
 
-import io.github.aifiltration.now
-import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import org.komapper.annotation.KomapperAutoIncrement
 import org.komapper.annotation.KomapperEntity
 import org.komapper.annotation.KomapperId
@@ -16,5 +16,5 @@ data class Message(
 	val content: String,
 	val authorId: Int,
 	val gameId: Int,
-	val timestamp: LocalDateTime = LocalDateTime.now(),
+	val timestamp: Instant = Clock.System.now(),
 )

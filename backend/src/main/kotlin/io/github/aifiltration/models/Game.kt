@@ -1,7 +1,7 @@
 package io.github.aifiltration.models
 
-import io.github.aifiltration.now
-import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import org.komapper.annotation.*
 
 
@@ -12,5 +12,5 @@ data class Game(
 	@KomapperId
 	val id: Int = 0,
 	@KomapperCreatedAt
-	val timestamp: LocalDateTime = LocalDateTime.now(),
+	val timestamp: Instant = Clock.System.now(),
 )
