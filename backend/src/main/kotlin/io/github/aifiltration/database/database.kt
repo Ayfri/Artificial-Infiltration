@@ -11,4 +11,13 @@ private val host = env("DATABASE_HOST")
 private val port = env("DATABASE_PORT")
 private val name = env("DATABASE_NAME")
 
-val database = R2dbcDatabase("r2dbc:mariadb:///$user:$password@$host:$port/$name")
+/**
+ * **Database URL format:**
+ * ```
+ * r2dbc:a-driver:pipes://localhost:3306/my_database?locale=en_US
+ * \___/ \______/ \___/   \____________/\__________/\___________/
+ *  |       |       |           |            |           |
+ * scheme driver  protocol  authority       path       query
+ * ```
+ */
+val database = R2dbcDatabase("r2dbc:mariadb://$user:$password@$host:$port/$name")
