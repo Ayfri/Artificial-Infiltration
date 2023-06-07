@@ -14,3 +14,6 @@ __pycache__/
 
 # Environment configurations
 **/.env
+
+# Logs
+**/logs.txt
