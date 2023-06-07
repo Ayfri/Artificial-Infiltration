@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project name="artificial infiltration" id="Project-878" database="MariaDb" >
+<project name="MariaDb" id="Project-11a6" database="MariaDb" >
 	<schema name="artificial_infiltration" >
-		<table name="badges" >
-			<column name="badge_id" type="INT" jt="4" mandatory="y" unsigned="y" />
-			<column name="user_id" type="INT" jt="4" mandatory="y" unsigned="y" />
+		<table name="badges" row_count="0" spec="" >
+			<column name="badge_id" type="INT" length="10" jt="4" mandatory="y" unsigned="y" />
+			<column name="user_id" type="INT" length="10" jt="4" mandatory="y" unsigned="y" />
 			<index name="unq_badges_user_id" unique="UNIQUE_KEY" >
 				<column name="user_id" />
 			</index>
-			<fk name="fk_badges_users" to_schema="artificial_infiltration" to_table="users" delete_action="cascade" update_action="cascade" >
+			<fk name="fk_badges_users" to_schema="artificial_infiltration" to_table="users" delete_action="cascade" update_action="cascade" options="" >
 				<fk_column name="user_id" pk="id" />
 			</fk>
-			<options><![CDATA[engine=InnoDB]]></options>
+			<options><![CDATA[ENGINE=InnoDB DEFAULT CHARSET=latin1]]></options>
 		</table>
-		<table name="games" >
-			<column name="id" type="INT" jt="4" mandatory="y" unsigned="y" >
+		<table name="games" row_count="0" spec="" >
+			<column name="id" type="INT" length="10" jt="4" mandatory="y" unsigned="y" >
 				<identity><![CDATA[AUTO_INCREMENT]]></identity>
 			</column>
 			<column name="timestamp" type="TIMESTAMP" jt="93" mandatory="y" >
@@ -22,15 +22,15 @@
 			<index name="pk_games" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
-			<options><![CDATA[engine=InnoDB]]></options>
+			<options><![CDATA[ENGINE=InnoDB DEFAULT CHARSET=latin1]]></options>
 		</table>
-		<table name="messages" >
-			<column name="id" type="INT" jt="4" mandatory="y" unsigned="y" >
+		<table name="messages" row_count="0" spec="" >
+			<column name="id" type="INT" length="10" jt="4" mandatory="y" unsigned="y" >
 				<identity><![CDATA[AUTO_INCREMENT]]></identity>
 			</column>
+			<column name="author_id" type="INT" length="10" jt="4" mandatory="y" unsigned="y" />
 			<column name="content" type="VARCHAR" length="140" jt="12" mandatory="y" />
-			<column name="author_id" type="INT" jt="4" mandatory="y" unsigned="y" />
-			<column name="game_id" type="INT" jt="4" mandatory="y" unsigned="y" />
+			<column name="game_id" type="INT" length="10" jt="4" mandatory="y" unsigned="y" />
 			<column name="timestamp" type="TIMESTAMP" jt="93" mandatory="y" >
 				<defo><![CDATA[current_timestamp()]]></defo>
 			</column>
@@ -43,50 +43,50 @@
 			<index name="unq_messages_game_id" unique="UNIQUE_KEY" >
 				<column name="game_id" />
 			</index>
-			<fk name="fk_messages_users" to_schema="artificial_infiltration" to_table="users" delete_action="cascade" update_action="cascade" >
-				<fk_column name="author_id" pk="id" />
-			</fk>
-			<fk name="fk_messages_games" to_schema="artificial_infiltration" to_table="games" delete_action="cascade" update_action="cascade" >
+			<fk name="fk_messages_games" to_schema="artificial_infiltration" to_table="games" delete_action="cascade" update_action="cascade" options="" >
 				<fk_column name="game_id" pk="id" />
 			</fk>
-			<options><![CDATA[engine=InnoDB]]></options>
+			<fk name="fk_messages_users" to_schema="artificial_infiltration" to_table="users" delete_action="cascade" update_action="cascade" options="" >
+				<fk_column name="author_id" pk="id" />
+			</fk>
+			<options><![CDATA[ENGINE=InnoDB DEFAULT CHARSET=latin1]]></options>
 		</table>
-		<table name="user_games" >
-			<column name="user_id" type="INT" jt="4" mandatory="y" unsigned="y" />
-			<column name="game_id" type="INT" jt="4" mandatory="y" unsigned="y" />
-			<column name="points" type="INT" jt="4" mandatory="y" unsigned="y" />
+		<table name="user_games" row_count="0" spec="" >
+			<column name="game_id" type="INT" length="10" jt="4" mandatory="y" unsigned="y" />
+			<column name="points" type="INT" length="10" jt="4" mandatory="y" unsigned="y" />
+			<column name="user_id" type="INT" length="10" jt="4" mandatory="y" unsigned="y" />
 			<index name="unq_users_games_game_id" unique="UNIQUE_KEY" >
 				<column name="game_id" />
 			</index>
 			<index name="unq_users_games_user_id" unique="UNIQUE_KEY" >
 				<column name="user_id" />
 			</index>
-			<fk name="fk_user_games_users" to_schema="artificial_infiltration" to_table="users" delete_action="cascade" update_action="cascade" >
-				<fk_column name="user_id" pk="id" />
-			</fk>
-			<fk name="fk_user_games_games" to_schema="artificial_infiltration" to_table="games" delete_action="cascade" update_action="cascade" >
+			<fk name="fk_user_games_games" to_schema="artificial_infiltration" to_table="games" delete_action="cascade" update_action="cascade" options="" >
 				<fk_column name="game_id" pk="id" />
 			</fk>
-			<options><![CDATA[engine=InnoDB]]></options>
+			<fk name="fk_user_games_users" to_schema="artificial_infiltration" to_table="users" delete_action="cascade" update_action="cascade" options="" >
+				<fk_column name="user_id" pk="id" />
+			</fk>
+			<options><![CDATA[ENGINE=InnoDB DEFAULT CHARSET=latin1]]></options>
 		</table>
-		<table name="users" >
-			<column name="id" type="INT" jt="4" mandatory="y" unsigned="y" >
+		<table name="users" row_count="0" spec="" >
+			<column name="id" type="INT" length="10" jt="4" mandatory="y" unsigned="y" >
 				<identity><![CDATA[AUTO_INCREMENT]]></identity>
 			</column>
+			<column name="password" type="VARCHAR" length="128" jt="12" mandatory="y" />
 			<column name="username" type="VARCHAR" length="32" jt="12" mandatory="y" />
-			<column name="password" type="VARCHAR" length="64" jt="12" mandatory="y" />
 			<index name="pk_users" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
-			<options><![CDATA[engine=InnoDB]]></options>
+			<options><![CDATA[ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1]]></options>
 		</table>
-		<table name="votes" >
-			<column name="id" type="INT" jt="4" mandatory="y" unsigned="y" >
+		<table name="votes" row_count="0" spec="" >
+			<column name="id" type="INT" length="10" jt="4" mandatory="y" unsigned="y" >
 				<identity><![CDATA[AUTO_INCREMENT]]></identity>
 			</column>
-			<column name="author_id" type="INT" jt="4" mandatory="y" unsigned="y" />
-			<column name="game_id" type="INT" jt="4" mandatory="y" unsigned="y" />
-			<column name="target_id" type="INT" jt="4" mandatory="y" unsigned="y" />
+			<column name="author_id" type="INT" length="10" jt="4" mandatory="y" unsigned="y" />
+			<column name="game_id" type="INT" length="10" jt="4" mandatory="y" unsigned="y" />
+			<column name="target_id" type="INT" length="10" jt="4" mandatory="y" unsigned="y" />
 			<index name="pk_votes" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
@@ -99,25 +99,117 @@
 			<index name="unq_votes_game_id" unique="UNIQUE_KEY" >
 				<column name="game_id" />
 			</index>
-			<fk name="fk_votes_users" to_schema="artificial_infiltration" to_table="users" delete_action="cascade" update_action="cascade" >
-				<fk_column name="author_id" pk="id" />
-			</fk>
-			<fk name="fk_votes_users_0" to_schema="artificial_infiltration" to_table="users" delete_action="cascade" update_action="cascade" >
-				<fk_column name="target_id" pk="id" />
-			</fk>
-			<fk name="fk_votes_games" to_schema="artificial_infiltration" to_table="games" delete_action="cascade" update_action="cascade" >
+			<fk name="fk_votes_games" to_schema="artificial_infiltration" to_table="games" delete_action="cascade" update_action="cascade" options="" >
 				<fk_column name="game_id" pk="id" />
 			</fk>
-			<options><![CDATA[engine=InnoDB]]></options>
+			<fk name="fk_votes_users" to_schema="artificial_infiltration" to_table="users" delete_action="cascade" update_action="cascade" options="" >
+				<fk_column name="author_id" pk="id" />
+			</fk>
+			<fk name="fk_votes_users_0" to_schema="artificial_infiltration" to_table="users" delete_action="cascade" update_action="cascade" options="" >
+				<fk_column name="target_id" pk="id" />
+			</fk>
+			<options><![CDATA[ENGINE=InnoDB DEFAULT CHARSET=latin1]]></options>
 		</table>
 	</schema>
-	<connector name="MariaDb" database="MariaDb" driver_class="org.mariadb.jdbc.Driver" driver_jar="mariadb-java-client-3.1.2.jar" driver_desc="Standard" host="localhost" port="3307" instance="artificial_infiltration" user="root" schema_mapping="artificial infiltration:artificial_infiltration" useSystemProxy="false" />
-	<layout name="default layout" id="Layout-18e8" confirmed="y" show_relation="columns" >
-		<entity schema="artificial_infiltration" name="badges" color="C1D8EE" x="128" y="48" />
-		<entity schema="artificial_infiltration" name="games" color="C1D8EE" x="112" y="672" />
-		<entity schema="artificial_infiltration" name="messages" color="C1D8EE" x="272" y="400" />
-		<entity schema="artificial_infiltration" name="user_games" color="C1D8EE" x="48" y="416" />
-		<entity schema="artificial_infiltration" name="users" color="C1D8EE" x="112" y="224" />
-		<entity schema="artificial_infiltration" name="votes" color="C1D8EE" x="544" y="256" />
+	<connector name="MariaDb" database="MariaDb" driver_class="org.mariadb.jdbc.Driver" driver_jar="mariadb-java-client-3.1.2.jar" driver_desc="Standard" host="localhost" port="3307" instance="artificial_infiltration" user="root" useSystemProxy="false" />
+	<layout name="Main Layout" id="Layout-e0a" show_relation="columns" >
+		<entity schema="artificial_infiltration" name="badges" color="BED3F4" x="48" y="240" />
+		<entity schema="artificial_infiltration" name="games" color="BED3F4" x="624" y="224" />
+		<entity schema="artificial_infiltration" name="messages" color="BED3F4" x="240" y="416" />
+		<entity schema="artificial_infiltration" name="user_games" color="BED3F4" x="64" y="416" />
+		<entity schema="artificial_infiltration" name="users" color="BED3F4" x="240" y="224" />
+		<entity schema="artificial_infiltration" name="votes" color="BED3F4" x="432" y="224" />
+		<callout x="240" y="80" pointer="Round" >
+			<comment><![CDATA[This is a layout. 
+- Double-click table headers, columns, or foreign keys to edit 
+- Drag tables to the layout from the structure tree, or 
+   add them by pressing the arrow icon near columns 
+- Create multiple layouts with the same or different tables 
+- Right-click the layout to create new tables]]></comment>
+		</callout>
+		<group name="users" color="ECF0F7" >
+			<entity schema="artificial_infiltration" name="votes" />
+			<entity schema="artificial_infiltration" name="games" />
+			<entity schema="artificial_infiltration" name="messages" />
+			<entity schema="artificial_infiltration" name="user_games" />
+			<entity schema="artificial_infiltration" name="users" />
+			<entity schema="artificial_infiltration" name="badges" />
+		</group>
+	</layout>
+	<layout name="~Layout with Sample Tools" id="Layout-1f3c" show_column_type="y" show_relation="columns" >
+		<entity schema="artificial_infiltration" name="badges" color="BED3F4" x="48" y="64" />
+		<entity schema="artificial_infiltration" name="games" color="BED3F4" x="720" y="48" />
+		<entity schema="artificial_infiltration" name="messages" color="BED3F4" x="256" y="240" />
+		<entity schema="artificial_infiltration" name="user_games" color="BED3F4" x="64" y="240" />
+		<entity schema="artificial_infiltration" name="users" color="BED3F4" x="256" y="48" />
+		<entity schema="artificial_infiltration" name="votes" color="BED3F4" x="512" y="48" />
+		<script name="SQL Editor" id="Editor-24ca" language="SQL" >
+			<string><![CDATA[SELECT
+	id, password, username
+FROM
+	artificial_infiltration.users s;]]></string>
+		</script>
+		<browser id="Browse-2012" name="Relational Data Explorer" confirm_updates="y" >
+			<browse_table schema="artificial_infiltration" entity="users" x="20" y="20" width="400" height="300" >
+				<browse_table schema="artificial_infiltration" entity="badges" fk="fk_badges_users" x="440" y="20" width="500" height="350" />
+			</browse_table>
+		</browser>
+		<query id="Query-841" name="Query Builder" >
+			<query_table schema="artificial_infiltration" name="users" alias="u" x="48" y="48" >
+				<column name="id" />
+				<column name="password" />
+				<column name="username" />
+				<query_table schema="artificial_infiltration" name="badges" alias="b" x="240" y="48" fk="fk_badges_users" type="Inner Join" >
+					<column name="badge_id" />
+					<column name="user_id" />
+				</query_table>
+			</query_table>
+		</query>
+		<form name="Report" id="Report-2213" template="Page" css="container-fluid" view="frame" >
+			<var name="samplePageNumber" type="4" value="0" mandatory="n" />
+			<var name="sampleRecordsPerPage" type="4" value="100" mandatory="n" />
+			<body name="Body" template="Grid" pos="0,0,0,0,f,f" layout="{{-2,-2,-2,-2,-1},{-2,-2,-2,-2}}" scroll="n" html="n" >
+				<cell type="label" name="Users Data" template="H3" pos="0,0,1,0,l,c" />
+				<cell type="chart" name="Pie" template="Pie" pos="0,1,4,1,l,c" max_records="20" >
+					<form_script type="DataSource" language="SQL" >
+						<var name="id" type="4" />
+						<var name="password" />
+						<var name="username" />
+						<script ><![CDATA[SELECT * FROM artificial_infiltration.users]]></script>
+					</form_script>
+					<param name="i0" value="username" />
+					<param name="width" value="100%" />
+					<param name="v0" value="id" />
+					<param name="title" value="Sample Chart" />
+					<param name="height" value="400px" />
+				</cell>
+				<tableview name="sample" template="Table" css="table table-striped table-sm table-hover" pos="0,2,4,2,f,f" layout="{{-2,-2,-2,-2},{-2,-2}}" scroll="n" html="n" header_rows="1" >
+					<form_script type="DataSource" language="SQL" >
+						<var name="id" type="4" />
+						<var name="password" />
+						<var name="username" />
+						<script ><![CDATA[SELECT * FROM artificial_infiltration.users]]></script>
+					</form_script>
+					<cell type="label" name="id" pos="0,0,0,0,c,c" />
+					<cell type="label" name="password" pos="1,0,1,0,c,c" />
+					<cell type="label" name="username" pos="2,0,2,0,c,c" />
+					<cell type="label" name="Button can open other pages." pos="3,0,3,0,c,c" />
+					<cell type="label" name="${id}" template="Plain" pos="0,1,0,1,l,c" />
+					<cell type="label" name="${password}" template="Plain" pos="1,1,1,1,l,c" />
+					<cell type="label" name="${username}" template="Plain" pos="2,1,2,1,l,c" />
+					<cell type="button" name="More" template="Plain" css="btn btn-sm btn-secondary" pos="3,1,3,1,c,c" ref_id="Report-2213" />
+				</tableview>
+				<cell type="href" name="" disabled="${samplePageNumber&lt;1}" pos="0,3,0,3,l,c" glyph="bi-chevron_double_left" ref_id="Report-2213" >
+					<var name="samplePageNumber" value="0" />
+				</cell>
+				<cell type="href" name="" disabled="${samplePageNumber&lt;1}" pos="1,3,1,3,l,c" glyph="bi-chevron_left" ref_id="Report-2213" >
+					<var name="samplePageNumber" value="${Math.max(0,samplePageNumber-1)}" />
+				</cell>
+				<cell type="label" name="Page ${samplePageNumber+1}" pos="2,3,2,3,l,c" />
+				<cell type="href" name="" disabled="${!sampleHasNextPage}" pos="3,3,3,3,l,c" glyph="bi-chevron_right" ref_id="Report-2213" >
+					<var name="samplePageNumber" value="${( samplePageNumber+1 )}" />
+				</cell>
+			</body>
+		</form>
 	</layout>
 </project>
