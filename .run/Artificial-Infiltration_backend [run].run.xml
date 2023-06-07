@@ -1,0 +1,37 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Artificial-Infiltration:backend [run]" type="GradleRunConfiguration" factoryName="Gradle">
+    <output_file path="C:\Users\Pierre\IdeaProjects\compose\Artificial-Infiltration\backend\build\logs\logs.txt" />
+    <log_file alias="Logs" path="$PROJECT_DIR$/backend/logs.txt" skipped="false" />
+    <ExternalSystemSettings>
+      <option name="env">
+        <map>
+          <entry key="DATABASE_HOST" value="localhost" />
+          <entry key="DATABASE_NAME" value="artificial_infiltration" />
+          <entry key="DATABASE_PASSWORD" value="" />
+          <entry key="DATABASE_PORT" value="3307" />
+          <entry key="DATABASE_USER" value="root" />
+          <entry key="SALT" value="AjPLi-Id8d4uXTL7bx0exZ7o00_6bK" />
+        </map>
+      </option>
+      <option name="executionName" />
+      <option name="externalProjectPath" value="$PROJECT_DIR$/backend" />
+      <option name="externalSystemIdString" value="GRADLE" />
+      <option name="scriptParameters" value="--configure-on-demand -t" />
+      <option name="taskDescriptions">
+        <list />
+      </option>
+      <option name="taskNames">
+        <list>
+          <option value="run" />
+          <option value="assemble" />
+        </list>
+      </option>
+      <option name="vmOptions" value="" />
+    </ExternalSystemSettings>
+    <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+    <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+    <DebugAllEnabled>false</DebugAllEnabled>
+    <ForceTestExec>false</ForceTestExec>
+    <method v="2" />
+  </configuration>
+</component>

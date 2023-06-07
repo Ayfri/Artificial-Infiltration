@@ -6,6 +6,7 @@ import io.github.aifiltration.models.User
 import io.github.aifiltration.models._User.Companion.user
 import io.github.aifiltration.models.user
 import io.github.aifiltration.plugins.UserSession
+import io.github.aifiltration.plugins.sha512
 import io.github.aifiltration.plugins.updateHashedTable
 import io.github.aifiltration.routes.USER_ALREADY_EXISTS
 import io.ktor.http.*
@@ -34,7 +35,8 @@ fun Route.register() = post("/register") {
 		}
 
 		val result = database.runQuery {
-			QueryDsl.insert(Tables.user).single(User(username = request.username, password = request.password))
+			val password = sha512(request.password).joinToString("") { "%02x".format(it) }
+			QueryDsl.insert(Tables.user).single(User(username = request.username, password = password))
 		}
 
 		call.sessions.set(UserSession(result.id))
