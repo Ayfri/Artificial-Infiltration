@@ -10,6 +10,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Key
+import androidx.compose.material.icons.filled.LockReset
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -25,7 +26,7 @@ import io.github.aifiltration.theme.pink500
 
 @Composable
 @Preview
-fun LoginPage(
+fun SignUpPage(
 	isOnLoginPageMutableState: MutableState<Boolean> = remember { mutableStateOf(true) },
 ) {
 	Page {
@@ -34,12 +35,16 @@ fun LoginPage(
 				horizontalAlignment = Alignment.CenterHorizontally,
 				modifier = Modifier.fillMaxWidth(),
 			) {
-
-				Title("Login", color = MaterialTheme.colors.onPrimary, modifier = Modifier.padding(top = 16.dp))
+				Title(
+					"Create Account",
+					color = MaterialTheme.colors.onPrimary,
+					modifier = Modifier.padding(top = 16.dp)
+				)
 				Spacer(modifier = Modifier.padding(top = 60.dp))
 
 				var username by rememberSaveable { mutableStateOf("") }
 				var password by rememberSaveable { mutableStateOf("") }
+				var confirmPassword by rememberSaveable { mutableStateOf("") }
 
 				AuthInput(
 					value = username,
@@ -55,23 +60,31 @@ fun LoginPage(
 					icon = { Icon(Icons.Filled.Key, contentDescription = "Password") },
 					onValueChange = { password = it }
 				)
+
+				AuthInput(
+					value = confirmPassword,
+					placeholder = "Confirm Password",
+					keyboardType = KeyboardType.Password,
+					icon = { Icon(Icons.Filled.LockReset, contentDescription = "Confirm Password") },
+					onValueChange = { confirmPassword = it }
+				)
 			}
 
 			Column(
 				horizontalAlignment = Alignment.CenterHorizontally,
 				modifier = Modifier.fillMaxWidth(),
 			) {
-				AuthButton("Login", color1 = green400, color2 = green200)
+				AuthButton("Sign up", color1 = pink500, color2 = pink300)
 
 				Text(
-					"No account? Sign up now!",
+					"Already have an account? Login now!",
 					color = MaterialTheme.colors.onPrimary,
 					modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
 					style = MaterialTheme.typography.subtitle1
 				)
 
-				AuthButton("Sign up", color1 = pink500, color2 = pink300) {
-					isOnLoginPageMutableState.value = false
+				AuthButton("Login", color1 = green400, color2 = green200) {
+					isOnLoginPageMutableState.value = true
 				}
 			}
 		}

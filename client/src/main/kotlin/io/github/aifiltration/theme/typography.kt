@@ -72,31 +72,19 @@ val AITypography = Typography(
 	body1 = TextStyle(
 		fontFamily = font,
 		fontWeight = FontWeight.Bold,
-		fontSize = 16.sp,
+		fontSize = 20.sp,
 		letterSpacing = 0.5.sp
 	),
 	body2 = TextStyle(
 		fontFamily = font,
 		fontWeight = FontWeight.Bold,
-		fontSize = 14.sp,
+		fontSize = 16.sp,
 		letterSpacing = 0.25.sp
 	),
 	button = TextStyle(
 		fontFamily = font,
 		fontWeight = FontWeight.Bold,
-		fontSize = 14.sp,
+		fontSize = 24.sp,
 		letterSpacing = 1.25.sp
-	),
-	caption = TextStyle(
-		fontFamily = font,
-		fontWeight = FontWeight.Normal,
-		fontSize = 12.sp,
-		letterSpacing = 0.4.sp
-	),
-	overline = TextStyle(
-		fontFamily = font,
-		fontWeight = FontWeight.Normal,
-		fontSize = 10.sp,
-		letterSpacing = 1.5.sp
 	)
 )

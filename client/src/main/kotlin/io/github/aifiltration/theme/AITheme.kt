@@ -2,17 +2,20 @@ package io.github.aifiltration.theme
 
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 
 @Composable
 fun AITheme(
-	content: @Composable () -> Unit
+	content: @Composable () -> Unit,
 ) {
-	MaterialTheme(
-		colors = AIColors,
-		typography = AITypography,
-		shapes = AIShapes,
-		content = content
-	)
+	CompositionLocalProvider {
+		MaterialTheme(
+			colors = AIColors,
+			typography = AITypography,
+			shapes = AIShapes,
+			content = content
+		)
+	}
 }
 
 object AITheme {
