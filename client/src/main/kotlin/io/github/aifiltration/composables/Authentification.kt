@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerIcon
@@ -64,7 +65,10 @@ fun AuthInput(
 		),
 		keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
 		leadingIcon = icon,
-		modifier = Modifier.fillMaxWidth().padding(16.dp),
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(16.dp)
+			.shadow(AIElevations.input, shape = MaterialTheme.shapes.medium),
 		onValueChange = onValueChange,
 		placeholder = { Text(placeholder) },
 		shape = MaterialTheme.shapes.medium,
