@@ -18,11 +18,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import io.github.aifiltration.api.actions.registerUser
 import io.github.aifiltration.composables.*
 import io.github.aifiltration.theme.green200
 import io.github.aifiltration.theme.green400
 import io.github.aifiltration.theme.pink300
 import io.github.aifiltration.theme.pink500
+import kotlinx.coroutines.runBlocking
 
 @Composable
 @Preview
@@ -31,6 +33,9 @@ fun SignUpPage(
 ) {
 	Page {
 		AuthBox {
+			var username by rememberSaveable { mutableStateOf("") }
+			var password by rememberSaveable { mutableStateOf("") }
+			var confirmPassword by rememberSaveable { mutableStateOf("") }
 			Column(
 				horizontalAlignment = Alignment.CenterHorizontally,
 				modifier = Modifier.fillMaxWidth(),
@@ -42,9 +47,6 @@ fun SignUpPage(
 				)
 				Spacer(modifier = Modifier.padding(top = 60.dp))
 
-				var username by rememberSaveable { mutableStateOf("") }
-				var password by rememberSaveable { mutableStateOf("") }
-				var confirmPassword by rememberSaveable { mutableStateOf("") }
 
 				AuthInput(
 					value = username,
@@ -74,7 +76,12 @@ fun SignUpPage(
 				horizontalAlignment = Alignment.CenterHorizontally,
 				modifier = Modifier.fillMaxWidth(),
 			) {
-				AuthButton("Sign up", color1 = pink500, color2 = pink300)
+				AuthButton("Sign up", color1 = pink500, color2 = pink300) {
+					runBlocking {
+						val user = registerUser(username, password)
+						user?.let(::println)
+					}
+				}
 
 				Text(
 					"Already have an account? Login now!",

@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Artificial-Infiltration:backend [run]" type="GradleRunConfiguration" factoryName="Gradle">
+  <configuration default="false" name="Run Server" type="GradleRunConfiguration" factoryName="Gradle">
     <output_file path="C:\Users\Pierre\IdeaProjects\compose\Artificial-Infiltration\backend\build\logs\logs.txt" />
     <log_file alias="Logs" path="$PROJECT_DIR$/backend/logs.txt" skipped="false" />
     <ExternalSystemSettings>

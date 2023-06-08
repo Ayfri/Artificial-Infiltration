@@ -1,11 +1,12 @@
+val dotenvVersion = project.ext["dotenv.version"] as String
 val composeVersion = project.ext["compose.version"] as String
+val ktorVersion = project.ext["ktor.version"] as String
+val logbackVersion = project.ext["logback.version"] as String
 
 plugins {
 	kotlin("jvm")
 	kotlin("plugin.serialization")
 	id("org.jetbrains.compose") version "1.4.0"
-//	id("io.ktor.plugin")
-//	application
 }
 
 repositories {
@@ -18,6 +19,16 @@ dependencies {
 	implementation(compose.desktop.currentOs)
 	implementation(compose.materialIconsExtended)
 	implementation(compose.preview)
+
+	implementation("io.ktor:ktor-client-auth:$ktorVersion")
+	implementation("io.ktor:ktor-client-cio:$ktorVersion")
+	implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+	implementation("io.ktor:ktor-client-core:$ktorVersion")
+	implementation("io.ktor:ktor-client-logging:$ktorVersion")
+	implementation("ch.qos.logback:logback-classic:$logbackVersion")
+	implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+
+	implementation("io.github.cdimascio:dotenv-kotlin:$dotenvVersion")
 }
 
 compose.desktop {
@@ -25,9 +36,3 @@ compose.desktop {
 		mainClass = "io.github.aifiltration.MainKt"
 	}
 }
-
-/*
-application {
-	mainClass.set("io.github.aifiltration.MainKt")
-}
-*/

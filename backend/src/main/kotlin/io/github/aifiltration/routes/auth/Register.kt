@@ -20,10 +20,10 @@ import org.komapper.core.dsl.QueryDsl
 import org.komapper.core.dsl.query.firstOrNull
 
 @Serializable
-data class RegisterRequest(val username: String, val password: String)
+data class RegisterPayload(val username: String, val password: String)
 
 fun Route.register() = post("/register") {
-	val request = call.receive<RegisterRequest>()
+	val request = call.receive<RegisterPayload>()
 	database.withTransaction {
 		val alreadyExists = database.runQuery {
 			QueryDsl.from(Tables.user).where { user.username eq request.username }.firstOrNull()
