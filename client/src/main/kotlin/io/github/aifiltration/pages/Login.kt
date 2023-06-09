@@ -9,7 +9,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Key
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -52,7 +52,7 @@ fun LoginPage(
 					value = password,
 					placeholder = "Password",
 					keyboardType = KeyboardType.Password,
-					icon = { Icon(Icons.Filled.Key, contentDescription = "Password") },
+					icon = { Icon(Icons.Filled.Lock, contentDescription = "Password") },
 					onValueChange = { password = it }
 				)
 			}
