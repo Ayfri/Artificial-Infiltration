@@ -79,7 +79,7 @@ fun SignUpPage(
 				AuthButton("Sign up", color1 = pink500, color2 = pink300) {
 					runBlocking {
 						val user = registerUser(username, password)
-						user?.let(::println)
+						user.apply(::println)
 					}
 				}
 

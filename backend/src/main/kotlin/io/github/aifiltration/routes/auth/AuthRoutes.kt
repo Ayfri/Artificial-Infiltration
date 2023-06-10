@@ -14,9 +14,9 @@ fun Routing.auth(routing: Route.() -> Unit) {
 fun Application.authentificationRoutes() {
 	routing {
 		register()
-		login()
 
 		auth {
+			login()
 			logout()
 		}
 	}

@@ -12,17 +12,15 @@ import org.komapper.core.dsl.QueryDsl
 const val AUTH_NAME = "auth-basic-hashed"
 const val REALM = "Login"
 
-private var table = mapOf<String, ByteArray>()
+private var table = mapOf<String, String>()
 val sha512 = getDigestFunction("SHA-512") { "${env("SALT")}${it.length}" }
-
-val hashedUserTable get() = UserHashedTableAuth(sha512, table)
 
 suspend fun updateHashedTable() = database.withTransaction {
 	val result = database.runQuery {
 		QueryDsl.from(Tables.user)
 	}
 
-	table = result.associate { it.username to it.password.toByteArray() }
+	table = result.associate { it.username to it.password }
 }
 
 fun Application.configureAuth() {
@@ -31,7 +29,15 @@ fun Application.configureAuth() {
 			realm = REALM
 			validate { credentials ->
 				updateHashedTable()
-				hashedUserTable.authenticate(credentials)
+
+				val hashedPassword = sha512(credentials.password)
+				val hashedPasswordAsString = hashedPassword.joinToString("") { "%02x".format(it) }
+
+				if (table[credentials.name] == hashedPasswordAsString) {
+					UserIdPrincipal(credentials.name)
+				} else {
+					null
+				}
 			}
 		}
 	}

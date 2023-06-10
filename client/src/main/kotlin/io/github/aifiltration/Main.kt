@@ -9,7 +9,10 @@ import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.singleWindowApplication
 import io.github.aifiltration.pages.LoginPage
 import io.github.aifiltration.pages.SignUpPage
+import io.github.aifiltration.storage.Storage
 import io.github.aifiltration.theme.AITheme
+
+val storage = Storage("config.json").apply { load() }
 
 fun main() = singleWindowApplication(
 	title = "Artificial Infiltration",
