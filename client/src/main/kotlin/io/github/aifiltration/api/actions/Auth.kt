@@ -9,19 +9,13 @@ import kotlinx.serialization.Serializable
 @Serializable
 private data class RegisterPayload(val username: String, val password: String)
 
-suspend fun registerUser(username: String, password: String): Result<User> {
-	val response = post("/register") {
+suspend fun registerUser(username: String, password: String) = runCatching {
+	post("/register") {
 		body(RegisterPayload(username, password))
-	}
-
-	return runCatching { response.body() }
+	}.body<User>()
 }
 
-suspend fun login(): Result<User> {
-	val response = post("/login")
-
-	return runCatching {
-		LOGGER.info("Cookies : \n${response.setCookie().joinToString("\n") { "${it.name} : ${it.value}" }}")
-		response.body()
-	}
+suspend fun login() = runCatching {
+	LOGGER.info("Cookies : \n${post("/login").setCookie().joinToString("\n") { "${it.name} : ${it.value}" }}")
+	post("/login")
 }

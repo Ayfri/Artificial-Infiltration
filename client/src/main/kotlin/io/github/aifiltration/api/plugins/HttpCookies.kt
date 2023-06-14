@@ -34,7 +34,7 @@ private class FileCookiesStorage : CookiesStorage {
 	override suspend fun addCookie(requestUrl: Url, cookie: Cookie) {
 		val cookies = getCookies(requestUrl)
 		cookies += CookieSerialized(cookie)
-		storage[requestUrl.toString()] = storage.json.encodeToString(cookies)
+		storage[requestUrl.host] = storage.json.encodeToString(cookies)
 		storage.save()
 	}
 
@@ -55,5 +55,5 @@ private class FileCookiesStorage : CookiesStorage {
 	}
 
 	private fun getCookies(requestUrl: Url) =
-		storage.json.decodeFromString<MutableList<CookieSerialized>>(storage[requestUrl.toString()] ?: "[]")
+		storage.json.decodeFromString<MutableList<CookieSerialized>>(storage[requestUrl.host] ?: "[]")
 }

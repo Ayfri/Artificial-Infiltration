@@ -5,7 +5,6 @@ import io.github.aifiltration.database.database
 import io.github.aifiltration.models.User
 import io.github.aifiltration.models._User.Companion.user
 import io.github.aifiltration.models.user
-import io.github.aifiltration.plugins.UserSession
 import io.github.aifiltration.plugins.sha512
 import io.github.aifiltration.plugins.updateHashedTable
 import io.github.aifiltration.routes.USER_ALREADY_EXISTS
@@ -14,7 +13,6 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.server.sessions.*
 import kotlinx.serialization.Serializable
 import org.komapper.core.dsl.QueryDsl
 import org.komapper.core.dsl.query.firstOrNull
@@ -39,9 +37,7 @@ fun Route.register() = post("/register") {
 			QueryDsl.insert(Tables.user).single(User(username = request.username, password = password))
 		}
 
-		call.sessions.set(UserSession(result.id))
 		updateHashedTable()
-
 		call.respond(HttpStatusCode.Created, result)
 	}
 }

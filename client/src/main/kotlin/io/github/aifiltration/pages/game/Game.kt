@@ -1,10 +1,10 @@
 package io.github.aifiltration.pages.game
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.ButtonDefaults.buttonColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,8 +18,9 @@ import io.github.aifiltration.theme.red200
 import io.github.aifiltration.types.User
 
 @Composable
-@Preview
-fun GamePage() {
+fun GamePage(
+	isLoggedIn: MutableState<Boolean>,
+) {
 	Page {
 		val placeholderUsers = (1..5).map { User(it, "User $it") }
 		Scaffold(
@@ -48,6 +49,7 @@ fun GamePage() {
 							GameButton("Play Again", green400)
 							GameButton("Quit", red200) {
 								storage["loggedIn"] = "false"
+								isLoggedIn.value = false
 							}
 						}
 					}

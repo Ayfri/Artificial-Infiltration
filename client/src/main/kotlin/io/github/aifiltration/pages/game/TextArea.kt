@@ -11,16 +11,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import io.github.aifiltration.cacheAppData
 import io.github.aifiltration.composables.UserAvatar
 import io.github.aifiltration.theme.purple800
 import io.github.aifiltration.theme.purple900
-import io.github.aifiltration.types.User
 
 const val MAX_MESSAGE_LENGTH = 140
 
 @Composable
 fun TextArea() {
-	val placeholderUser = User(0, "")
 	var text by remember { mutableStateOf("") }
 
 	Row(
@@ -31,7 +30,7 @@ fun TextArea() {
 		horizontalArrangement = Arrangement.SpaceBetween,
 		verticalAlignment = Alignment.CenterVertically
 	) {
-		UserAvatar(placeholderUser)
+		UserAvatar(cacheAppData.currentUser)
 		TextField(
 			value = text,
 			onValueChange = {

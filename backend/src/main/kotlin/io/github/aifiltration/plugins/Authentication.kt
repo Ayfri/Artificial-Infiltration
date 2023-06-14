@@ -6,6 +6,7 @@ import io.github.aifiltration.env
 import io.github.aifiltration.models.user
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.response.*
 import io.ktor.util.*
 import org.komapper.core.dsl.QueryDsl
 
@@ -39,6 +40,13 @@ fun Application.configureAuth() {
 					null
 				}
 			}
+		}
+
+		session<UserSession> {
+			challenge {
+				call.respond(UnauthorizedResponse())
+			}
+			validate { it }
 		}
 	}
 }
