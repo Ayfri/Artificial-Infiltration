@@ -68,6 +68,7 @@ fun LoginPage(
 				AuthButton("Login", color1 = green400, color2 = green200) {
 					storage["username"] = username
 					storage["password"] = password
+					storage["loggedIn"] = "true"
 					storage.save()
 
 					runBlocking {
