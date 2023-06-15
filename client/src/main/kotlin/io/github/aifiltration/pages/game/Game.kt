@@ -1,6 +1,7 @@
 package io.github.aifiltration.pages.game
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.material.ButtonDefaults.buttonColors
 import androidx.compose.runtime.Composable
@@ -23,17 +24,18 @@ fun GamePage(
 ) {
 	Page {
 		val placeholderUsers = (1..5).map { User(it, "User $it") }
+		val scrollState = rememberLazyListState()
 		Scaffold(
 			topBar = {
 				TopBar(placeholderUsers)
 			},
 			bottomBar = {
-				TextArea()
+				TextArea(scrollState)
 			}
 		) { innerPadding ->
 			Row {
 				Box(modifier = Modifier.padding(innerPadding)) {
-					MessageList()
+					MessageList(scrollState)
 				}
 
 				Surface(

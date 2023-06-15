@@ -30,7 +30,8 @@ fun Route.me() = get("/me") {
 	if (user == null) {
 		call.respond(HttpStatusCode.Unauthorized)
 		call.sessions.clear<UserSession>()
+		return@get
 	}
 
-	call.respond(HttpStatusCode.OK, user!!)
+	call.respond(HttpStatusCode.OK, user)
 }

@@ -60,7 +60,6 @@
 			</column>
 			<column name="password" type="VARCHAR" length="128" jt="12" mandatory="y" />
 			<column name="username" type="VARCHAR" length="32" jt="12" mandatory="y" />
-			<column name="user_id" type="INT" length="10" jt="4" unsigned="y" />
 			<index name="pk_users" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
@@ -114,7 +113,7 @@ FROM
 			<browse_table schema="artificial_infiltration" entity="users" x="20" y="20" width="400" height="300" />
 		</browser>
 		<query id="Query-841" name="Query Builder" >
-			<query_table schema="artificial_infiltration" name="badges" alias="b" x="240" y="48" >
+			<query_table schema="artificial_infiltration" name="badges" alias="b" x="48" y="48" >
 				<column name="badge_id" />
 				<column name="user_id" />
 			</query_table>
