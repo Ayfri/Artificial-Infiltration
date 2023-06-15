@@ -14,25 +14,23 @@ import io.ktor.server.sessions.*
 import org.komapper.core.dsl.QueryDsl
 import org.komapper.core.dsl.query.firstOrNull
 
-fun Route.me() {
-	get("/me") {
-		val session = call.sessions.get<UserSession>() ?: run {
-			LOGGER.info("No session")
-			call.respond(HttpStatusCode.Unauthorized)
-			return@get
-		}
-
-		val user = database.runQuery {
-			QueryDsl.from(Tables.user).where { user.id eq session.userId }.firstOrNull()
-		}
-
-		LOGGER.info("User : $user")
-
-		if (user == null) {
-			call.respond(HttpStatusCode.Unauthorized)
-			call.sessions.clear<UserSession>()
-		}
-
-		call.respond(HttpStatusCode.OK, user!!)
+fun Route.me() = get("/me") {
+	val session = call.sessions.get<UserSession>() ?: run {
+		LOGGER.info("No session")
+		call.respond(HttpStatusCode.Unauthorized)
+		return@get
 	}
+
+	val user = database.runQuery {
+		QueryDsl.from(Tables.user).where { user.id eq session.userId }.firstOrNull()
+	}
+
+	LOGGER.info("User : $user")
+
+	if (user == null) {
+		call.respond(HttpStatusCode.Unauthorized)
+		call.sessions.clear<UserSession>()
+	}
+
+	call.respond(HttpStatusCode.OK, user!!)
 }

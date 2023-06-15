@@ -11,24 +11,22 @@ import org.komapper.core.dsl.QueryDsl
 import org.komapper.core.dsl.query.firstOrNull
 
 
-fun Route.game() {
-	get("/games/{id}") {
-		val id = call.parameters["id"]?.toIntOrNull() ?: run {
-			call.respond(HttpStatusCode.BadRequest)
-			return@get
-		}
-
-		val game = database.runQuery {
-			QueryDsl.from(Tables.game).where {
-				Tables.game.id eq id
-			}.firstOrNull()
-		}
-
-		if (game == null) {
-			call.respond(HttpStatusCode.NotFound)
-			return@get
-		}
-
-		call.respond(game)
+fun Route.game() = get("/games/{id}") {
+	val id = call.parameters["id"]?.toIntOrNull() ?: run {
+		call.respond(HttpStatusCode.BadRequest)
+		return@get
 	}
+
+	val game = database.runQuery {
+		QueryDsl.from(Tables.game).where {
+			Tables.game.id eq id
+		}.firstOrNull()
+	}
+
+	if (game == null) {
+		call.respond(HttpStatusCode.NotFound)
+		return@get
+	}
+
+	call.respond(game)
 }
