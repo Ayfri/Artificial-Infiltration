@@ -14,16 +14,14 @@ import io.github.aifiltration.storage
 import io.github.aifiltration.types.Message
 import kotlinx.coroutines.delay
 
-private var messages by mutableStateOf(listOf<Message>())
+var messages by mutableStateOf(listOf<Message>())
 
 @Composable
 fun MessageList() {
 	LaunchedEffect(messages) {
 		while (true) {
-			getMessages(storage["gameId"]!!.toInt()).getOrThrow().let {
-				messages = it
-			}
-			delay(1000)
+			messages = getMessages(storage["gameId"]!!.toInt()).getOrThrow()
+			delay(20000)
 		}
 	}
 

@@ -11,10 +11,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import io.github.aifiltration.LOGGER
+import io.github.aifiltration.api.actions.createMessage
+import io.github.aifiltration.api.actions.getMessages
 import io.github.aifiltration.cacheAppData
 import io.github.aifiltration.composables.UserAvatar
+import io.github.aifiltration.storage
 import io.github.aifiltration.theme.purple800
 import io.github.aifiltration.theme.purple900
+import kotlinx.coroutines.runBlocking
 
 const val MAX_MESSAGE_LENGTH = 140
 
@@ -54,7 +59,17 @@ fun TextArea() {
 		)
 
 		IconButton(
-			onClick = { /*TODO*/ },
+			onClick = {
+				runBlocking {
+					val gameId = storage["gameId"]!!.toInt()
+					val response = createMessage(gameId, text).onFailure {
+						LOGGER.error("Failed to send message", it)
+					}
+					if (response.isSuccess) messages = getMessages(gameId).getOrThrow()
+
+					text = ""
+				}
+			},
 			modifier = Modifier
 				.background(purple900, shape = CircleShape)
 				.size(60.dp)
