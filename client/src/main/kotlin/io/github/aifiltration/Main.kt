@@ -8,6 +8,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.singleWindowApplication
+import io.github.aifiltration.api.actions.currentGame
 import io.github.aifiltration.pages.LoginPage
 import io.github.aifiltration.pages.SignUpPage
 import io.github.aifiltration.pages.game.GamePage
@@ -28,6 +29,15 @@ fun main() = singleWindowApplication(
 	AITheme {
 		val isLoggedIn = remember { mutableStateOf(storage["loggedIn"] == "true") }
 		if (isLoggedIn.value) {
+			runCatching {
+				runBlocking {
+					storage["gameId"] = currentGame().getOrThrow().id.toString()
+				}
+			}.onFailure {
+				storage.remove("gameId")
+				storage.save()
+			}
+
 			GamePage(isLoggedIn)
 			return@AITheme
 		}

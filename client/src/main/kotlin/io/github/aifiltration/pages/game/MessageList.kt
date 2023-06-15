@@ -4,19 +4,28 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.github.aifiltration.api.actions.getMessages
 import io.github.aifiltration.composables.MessageBox
 import io.github.aifiltration.composables.UserAvatar
+import io.github.aifiltration.storage
 import io.github.aifiltration.types.Message
-import io.github.aifiltration.types.User
+import kotlinx.coroutines.delay
+
+private var messages by mutableStateOf(listOf<Message>())
 
 @Composable
 fun MessageList() {
-	val placeholderMessages = (1..15).map {
-		Message(it, "Message $it", User(0, "Username"), 0)
-	}.sortedBy { it.timestamp }
+	LaunchedEffect(messages) {
+		while (true) {
+			getMessages(storage["gameId"]!!.toInt()).getOrThrow().let {
+				messages = it
+			}
+			delay(1000)
+		}
+	}
 
 	val scrollState = rememberLazyListState()
 	LazyColumn(
@@ -27,7 +36,7 @@ fun MessageList() {
 		item {
 			Spacer(Modifier)
 		}
-		items(placeholderMessages) {
+		items(messages) {
 			Message(it)
 		}
 		item {
