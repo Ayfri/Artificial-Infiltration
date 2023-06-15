@@ -8,6 +8,9 @@ import io.github.aifiltration.routes.configureRouting
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
+import kotlinx.coroutines.runBlocking
+
+lateinit var currentGame: PlayingGame
 
 fun main() {
 	embeddedServer(
@@ -20,6 +23,10 @@ fun main() {
 }
 
 fun Application.module() {
+	runBlocking {
+		currentGame = createGame()
+	}
+
 	configureAuth()
 	configureContentNegotiation()
 	configureMonitoring()

@@ -11,4 +11,5 @@ data class UserGame(
 	val gameId: Int,
 	@KomapperId(virtual = true)
 	val userId: Int,
+	val points: Int = 0,
 )
