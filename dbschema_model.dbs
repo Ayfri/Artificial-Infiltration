@@ -55,16 +55,10 @@
 			<column name="game_id" type="INT" length="10" jt="4" mandatory="y" unsigned="y" />
 			<column name="points" type="INT" length="10" jt="4" mandatory="y" unsigned="y" />
 			<column name="user_id" type="INT" length="10" jt="4" mandatory="y" unsigned="y" />
-			<index name="unq_users_games_game_id" unique="UNIQUE_KEY" >
-				<column name="game_id" />
-			</index>
-			<index name="unq_users_games_user_id" unique="UNIQUE_KEY" >
-				<column name="user_id" />
-			</index>
-			<fk name="fk_user_games_games" to_schema="artificial_infiltration" to_table="games" delete_action="cascade" update_action="cascade" options="" >
+			<fk name="fk_user_games_games" to_schema="artificial_infiltration" to_table="games" delete_action="cascade" update_action="cascade" >
 				<fk_column name="game_id" pk="id" />
 			</fk>
-			<fk name="fk_user_games_users" to_schema="artificial_infiltration" to_table="users" delete_action="cascade" update_action="cascade" options="" >
+			<fk name="fk_user_games_users" to_schema="artificial_infiltration" to_table="users" delete_action="cascade" update_action="cascade" >
 				<fk_column name="user_id" pk="id" />
 			</fk>
 			<options><![CDATA[ENGINE=InnoDB DEFAULT CHARSET=latin1]]></options>
@@ -113,27 +107,19 @@
 	</schema>
 	<connector name="MariaDb" database="MariaDb" driver_class="org.mariadb.jdbc.Driver" driver_jar="mariadb-java-client-3.1.2.jar" driver_desc="Standard" host="localhost" port="3307" instance="artificial_infiltration" user="root" useSystemProxy="false" />
 	<layout name="Main Layout" id="Layout-e0a" show_relation="columns" >
-		<entity schema="artificial_infiltration" name="badges" color="BED3F4" x="48" y="240" />
-		<entity schema="artificial_infiltration" name="games" color="BED3F4" x="624" y="224" />
-		<entity schema="artificial_infiltration" name="messages" color="BED3F4" x="240" y="416" />
-		<entity schema="artificial_infiltration" name="user_games" color="BED3F4" x="64" y="416" />
-		<entity schema="artificial_infiltration" name="users" color="BED3F4" x="240" y="224" />
-		<entity schema="artificial_infiltration" name="votes" color="BED3F4" x="432" y="224" />
-		<callout x="240" y="80" pointer="Round" >
-			<comment><![CDATA[This is a layout. 
-- Double-click table headers, columns, or foreign keys to edit 
-- Drag tables to the layout from the structure tree, or 
-   add them by pressing the arrow icon near columns 
-- Create multiple layouts with the same or different tables 
-- Right-click the layout to create new tables]]></comment>
-		</callout>
+		<entity schema="artificial_infiltration" name="badges" color="BED3F4" x="48" y="96" />
+		<entity schema="artificial_infiltration" name="games" color="BED3F4" x="624" y="80" />
+		<entity schema="artificial_infiltration" name="messages" color="BED3F4" x="240" y="272" />
+		<entity schema="artificial_infiltration" name="user_games" color="BED3F4" x="64" y="272" />
+		<entity schema="artificial_infiltration" name="users" color="BED3F4" x="240" y="80" />
+		<entity schema="artificial_infiltration" name="votes" color="BED3F4" x="432" y="80" />
 		<group name="users" color="ECF0F7" >
 			<entity schema="artificial_infiltration" name="votes" />
 			<entity schema="artificial_infiltration" name="games" />
 			<entity schema="artificial_infiltration" name="messages" />
-			<entity schema="artificial_infiltration" name="user_games" />
 			<entity schema="artificial_infiltration" name="users" />
 			<entity schema="artificial_infiltration" name="badges" />
+			<entity schema="artificial_infiltration" name="user_games" />
 		</group>
 	</layout>
 	<layout name="~Layout with Sample Tools" id="Layout-1f3c" show_column_type="y" show_relation="columns" >
@@ -173,8 +159,8 @@ FROM
 				<cell type="chart" name="Pie" template="Pie" pos="0,1,4,1,l,c" max_records="20" >
 					<form_script type="DataSource" language="SQL" >
 						<var name="id" type="4" />
-						<var name="password" />
-						<var name="username" />
+						<var name="password" type="-1" />
+						<var name="username" type="-1" />
 						<script ><![CDATA[SELECT * FROM artificial_infiltration.users]]></script>
 					</form_script>
 					<param name="i0" value="username" />
@@ -186,8 +172,8 @@ FROM
 				<tableview name="sample" template="Table" css="table table-striped table-sm table-hover" pos="0,2,4,2,f,f" layout="{{-2,-2,-2,-2},{-2,-2}}" scroll="n" html="n" header_rows="1" >
 					<form_script type="DataSource" language="SQL" >
 						<var name="id" type="4" />
-						<var name="password" />
-						<var name="username" />
+						<var name="password" type="-1" />
+						<var name="username" type="-1" />
 						<script ><![CDATA[SELECT * FROM artificial_infiltration.users]]></script>
 					</form_script>
 					<cell type="label" name="id" pos="0,0,0,0,c,c" />
