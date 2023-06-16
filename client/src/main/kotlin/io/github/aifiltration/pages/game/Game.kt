@@ -11,12 +11,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.aifiltration.api.actions.getMembers
+import io.github.aifiltration.cacheAppData
 import io.github.aifiltration.composables.Page
 import io.github.aifiltration.storage
 import io.github.aifiltration.theme.green400
 import io.github.aifiltration.theme.purple700
 import io.github.aifiltration.theme.red200
 import io.github.aifiltration.types.User
+import kotlinx.coroutines.delay
 
 private var members by mutableStateOf(emptyList<User>())
 
@@ -27,12 +29,15 @@ fun GamePage(
 	Page {
 		val scrollState = rememberLazyListState()
 		LaunchedEffect(members) {
-			members = getMembers(storage["gameId"]!!.toInt()).getOrNull() ?: emptyList()
+			while (true) {
+				members = getMembers(storage["gameId"]!!.toInt()).getOrNull() ?: emptyList()
+				delay(5000)
+			}
 		}
 
 		Scaffold(
 			topBar = {
-				TopBar(members)
+				TopBar(members.filter { it.id != cacheAppData.currentUser.id })
 			},
 			bottomBar = {
 				TextArea(scrollState)

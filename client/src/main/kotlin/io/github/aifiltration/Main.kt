@@ -31,18 +31,16 @@ fun main() = singleWindowApplication(
 	AITheme {
 		val isLoggedIn = mutableStateOf(storage["loggedIn"] == "true" && !storage["username"].isNullOrBlank())
 
-		if (isLoggedIn.value) run {
-			runCatching {
-				runBlocking {
-					val gameId = currentGame().getOrThrow().id
-					storage["gameId"] = gameId.toString()
-					joinGame(gameId)
-				}
+		if (isLoggedIn.value) {
+			runBlocking {
+				val gameId = currentGame().getOrThrow().id
+				storage["gameId"] = gameId.toString()
+				cacheAppData.updateCurrentUser()
+				joinGame(gameId)
 			}.onFailure {
 				storage.remove("gameId")
 				storage.save()
 				isLoggedIn.value = false
-				return@run
 			}
 
 			GamePage(isLoggedIn)
