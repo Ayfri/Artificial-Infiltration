@@ -55,5 +55,9 @@ private class FileCookiesStorage : CookiesStorage {
 	}
 
 	private fun getCookies(requestUrl: Url) =
-		storage.json.decodeFromString<MutableList<CookieSerialized>>(storage[requestUrl.host] ?: "[]")
+		storage.json.decodeFromString<MutableList<CookieSerialized>>(storage[requestUrl.host] ?: "[]").apply {
+			removeIf { it.expires.toGMTDate() < GMTDate() }
+		}
 }
+
+private fun Instant.toGMTDate() = GMTDate(toEpochMilliseconds())

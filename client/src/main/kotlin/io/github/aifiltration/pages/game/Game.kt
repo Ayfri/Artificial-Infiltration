@@ -51,6 +51,10 @@ fun GamePage(
 							GameButton("Play Again", green400)
 							GameButton("Quit", red200) {
 								storage["loggedIn"] = "false"
+								storage["username"] = ""
+								storage["password"] = ""
+								storage.remove("gameId")
+								storage.save()
 								isLoggedIn.value = false
 							}
 						}

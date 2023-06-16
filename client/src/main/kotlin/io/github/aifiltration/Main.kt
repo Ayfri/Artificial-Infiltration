@@ -9,6 +9,7 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.singleWindowApplication
 import io.github.aifiltration.api.actions.currentGame
+import io.github.aifiltration.api.actions.login
 import io.github.aifiltration.pages.LoginPage
 import io.github.aifiltration.pages.SignUpPage
 import io.github.aifiltration.pages.game.GamePage
@@ -19,7 +20,7 @@ import io.github.aifiltration.types.User
 import kotlinx.coroutines.runBlocking
 
 val cacheAppData by mutableStateOf(CacheAppData(User(0, "User 0")))
-val storage by mutableStateOf(Storage("config.json"))
+val storage by mutableStateOf(Storage("config.json")).apply { value.load() }
 
 
 fun main() = singleWindowApplication(
@@ -27,8 +28,9 @@ fun main() = singleWindowApplication(
 	state = WindowState(width = 1600.dp, height = 900.dp, position = WindowPosition.Aligned(Alignment.Center)),
 ) {
 	AITheme {
-		val isLoggedIn = remember { mutableStateOf(storage["loggedIn"] == "true") }
-		if (isLoggedIn.value) {
+		val isLoggedIn = mutableStateOf(storage["loggedIn"] == "true" && !storage["username"].isNullOrBlank())
+
+		if (isLoggedIn.value) run {
 			runCatching {
 				runBlocking {
 					storage["gameId"] = currentGame().getOrThrow().id.toString()
@@ -36,6 +38,8 @@ fun main() = singleWindowApplication(
 			}.onFailure {
 				storage.remove("gameId")
 				storage.save()
+				isLoggedIn.value = false
+				return@run
 			}
 
 			GamePage(isLoggedIn)
@@ -48,8 +52,11 @@ fun main() = singleWindowApplication(
 
 		runCatching {
 			runBlocking {
-				storage.load()
-				if (storage["loggedIn"] == "true") cacheAppData.updateCurrentUser()
+				if (storage["loggedIn"] == "true") {
+					login()
+					cacheAppData.updateCurrentUser()
+					isLoggedIn.value = true
+				}
 			}
 		}.onFailure {
 			storage["loggedIn"] = "false"

@@ -23,13 +23,13 @@ fun main() {
 }
 
 fun Application.module() {
-	runBlocking {
-		currentGame = createGame()
-	}
-
 	configureAuth()
 	configureContentNegotiation()
 	configureMonitoring()
 	configureRouting()
 	configureSessions()
+
+	runBlocking {
+		currentGame = createGame()
+	}
 }
