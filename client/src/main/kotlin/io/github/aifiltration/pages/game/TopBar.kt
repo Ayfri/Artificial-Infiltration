@@ -10,11 +10,8 @@ import androidx.compose.material.ButtonDefaults.buttonColors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -26,10 +23,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import io.github.aifiltration.api.actions.vote
 import io.github.aifiltration.composables.UserAvatar
+import io.github.aifiltration.storage
+import io.github.aifiltration.theme.green200
 import io.github.aifiltration.theme.green400
 import io.github.aifiltration.theme.purple650
 import io.github.aifiltration.types.User
+import io.ktor.http.*
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun TopBar(users: List<User>) {
@@ -54,29 +56,32 @@ fun TopBar(users: List<User>) {
 
 @Composable
 fun MemberList(users: List<User>) {
+	val hasVoted = rememberSaveable { mutableStateOf(false) }
+
 	Row(
 		horizontalArrangement = Arrangement.spacedBy(75.dp),
 		verticalAlignment = Alignment.CenterVertically,
 		modifier = Modifier.wrapContentSize()
 	) {
 		users.forEach {
-			MemberComponent(it)
+			MemberComponent(it, hasVoted)
 		}
 	}
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun MemberComponent(user: User) {
+fun MemberComponent(user: User, hasVoted: MutableState<Boolean>) {
 	var hover by rememberSaveable { mutableStateOf(false) }
-	val animatedSizeDp by animateDpAsState(targetValue = if (hover) 0.dp else 200.dp)
+	val animatedSizeDp by animateDpAsState(targetValue = if (hover && !hasVoted.value) 0.dp else 200.dp)
+	var isVoted by rememberSaveable { mutableStateOf(storage["voteTarget"] == user.id.toString()) }
 
 	Surface(
 		modifier = Modifier
 			.onPointerEvent(PointerEventType.Enter) { hover = true }
 			.onPointerEvent(PointerEventType.Exit) { hover = false },
 		shape = CircleShape,
-		color = MaterialTheme.colors.primary,
+		color = if (isVoted) green400 else MaterialTheme.colors.primary,
 	) {
 		Row(
 			modifier = Modifier
@@ -84,7 +89,7 @@ fun MemberComponent(user: User) {
 				.width(175.dp),
 			verticalAlignment = Alignment.CenterVertically
 		) {
-			UserAvatar(user)
+			UserAvatar(user, if (isVoted) green200 else null)
 			Box(
 				modifier = Modifier.fillMaxWidth()
 			) {
@@ -104,7 +109,17 @@ fun MemberComponent(user: User) {
 						.padding(start = animatedSizeDp)
 						.requiredWidth(100.dp)
 						.align(Alignment.Center),
-					onClick = { /*TODO*/ }
+					onClick = {
+						runBlocking {
+							val gameId = storage["gameId"]!!.toInt()
+							val response = vote(gameId, user.id).getOrThrow()
+							if (response.status.isSuccess()) {
+								storage["voteTarget"] = user.id.toString()
+								hasVoted.value = true
+								isVoted = true
+							}
+						}
+					}
 				) {
 					Text("Vote", fontSize = 16.sp)
 				}

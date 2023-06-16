@@ -8,3 +8,4 @@ private val url = env("API_URL")
 
 suspend fun get(path: String, block: HttpRequestBuilder.() -> Unit = {}) = client.get(url + path, block)
 suspend fun post(path: String, block: HttpRequestBuilder.() -> Unit = {}) = client.post(url + path, block)
+suspend fun delete(path: String, block: HttpRequestBuilder.() -> Unit = {}) = client.delete(url + path, block)
