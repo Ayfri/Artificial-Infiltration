@@ -5,6 +5,7 @@ import io.github.aifiltration.database.Tables
 import io.github.aifiltration.database.database
 import io.github.aifiltration.models.UserGame
 import io.github.aifiltration.models.game
+import io.github.aifiltration.models.user
 import io.github.aifiltration.models.userGame
 import io.github.aifiltration.plugins.UserSession
 import io.ktor.http.*
@@ -54,4 +55,23 @@ fun Route.joinGame() = post("/games/{id}/join") {
 			LOGGER.error("Failed to join game.", it)
 		}
 	}
+}
+
+fun Route.members() = get("/games/{id}/members") {
+	val id = call.parameters["id"]?.toIntOrNull() ?: run {
+		call.respond(HttpStatusCode.BadRequest)
+		return@get
+	}
+
+	val entityStore = database.runQuery {
+		QueryDsl.from(Tables.userGame).where {
+			Tables.userGame.gameId eq id
+		}.innerJoin(Tables.user) {
+			Tables.userGame.userId eq Tables.user.id
+		}.includeAll()
+	}
+
+	val members = entityStore[Tables.user]
+
+	call.respond(HttpStatusCode.OK, members)
 }

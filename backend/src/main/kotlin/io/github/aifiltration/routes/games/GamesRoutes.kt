@@ -8,8 +8,9 @@ fun Application.gamesRoutes() {
 	routing {
 		auth {
 			currentGame()
-			joinGame()
 			game()
+			joinGame()
+			members()
 		}
 	}
 }

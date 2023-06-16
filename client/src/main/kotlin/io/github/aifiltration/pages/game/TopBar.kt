@@ -33,6 +33,7 @@ import io.github.aifiltration.types.User
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 
+
 @Composable
 fun TopBar(users: List<User>) {
 	Row(
