@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import io.github.aifiltration.anonymousNames
 import io.github.aifiltration.api.actions.vote
 import io.github.aifiltration.composables.UserAvatar
 import io.github.aifiltration.storage
@@ -95,7 +96,7 @@ fun MemberComponent(user: User, hasVoted: MutableState<Boolean>) {
 				modifier = Modifier.fillMaxWidth()
 			) {
 				Text(
-					user.username,
+					anonymousNames.random(),
 					modifier = Modifier.fillMaxWidth().align(Alignment.Center),
 					textAlign = TextAlign.Center
 				)

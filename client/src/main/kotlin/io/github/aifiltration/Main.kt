@@ -23,7 +23,6 @@ import kotlinx.coroutines.runBlocking
 val cacheAppData by mutableStateOf(CacheAppData(User(0, "User 0")))
 val storage by mutableStateOf(Storage("config.json")).apply { value.load() }
 
-
 fun main() = singleWindowApplication(
 	title = "Artificial Infiltration",
 	state = WindowState(width = 1600.dp, height = 900.dp, position = WindowPosition.Aligned(Alignment.Center)),
