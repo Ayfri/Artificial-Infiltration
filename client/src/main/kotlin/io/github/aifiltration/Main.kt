@@ -9,6 +9,7 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.singleWindowApplication
 import io.github.aifiltration.api.actions.currentGame
+import io.github.aifiltration.api.actions.joinGame
 import io.github.aifiltration.api.actions.login
 import io.github.aifiltration.pages.LoginPage
 import io.github.aifiltration.pages.SignUpPage
@@ -33,7 +34,9 @@ fun main() = singleWindowApplication(
 		if (isLoggedIn.value) run {
 			runCatching {
 				runBlocking {
-					storage["gameId"] = currentGame().getOrThrow().id.toString()
+					val gameId = currentGame().getOrThrow().id
+					storage["gameId"] = gameId.toString()
+					joinGame(gameId)
 				}
 			}.onFailure {
 				storage.remove("gameId")
