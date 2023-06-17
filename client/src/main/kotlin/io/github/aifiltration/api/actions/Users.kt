@@ -11,7 +11,7 @@ suspend fun me() = runCatching {
 	response.body<User>()
 }
 
-suspend fun waitingList() = runCatching {
+suspend fun waitingRoom() = runCatching {
 	val response = get("/waiting-list")
 	if (!response.status.isSuccess()) throw Exception(response.bodyAsText())
 	response.body<List<User>>()

@@ -10,34 +10,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.github.aifiltration.api.actions.getMembers
 import io.github.aifiltration.cacheAppData
 import io.github.aifiltration.composables.Page
 import io.github.aifiltration.storage
 import io.github.aifiltration.theme.green400
 import io.github.aifiltration.theme.purple700
 import io.github.aifiltration.theme.red200
-import io.github.aifiltration.types.User
 import kotlinx.coroutines.delay
-
-private var members by mutableStateOf(emptyList<User>())
 
 @Composable
 fun GamePage(
 	isLoggedIn: MutableState<Boolean>,
 ) {
 	Page {
-		val scrollState = rememberLazyListState()
-		LaunchedEffect(members) {
-			while (true) {
-				members = getMembers(cacheAppData.currentGame!!.id).getOrNull() ?: emptyList()
-				delay(5000)
-			}
-		}
+		cacheAppData.UpdateMembersEffect()
 
+		val scrollState = rememberLazyListState()
 		Scaffold(
 			topBar = {
-				TopBar(members.filter { it.id != cacheAppData.currentUser.id })
+				TopBar(cacheAppData.members.value.filter { it.id != cacheAppData.currentUser.id })
 			},
 			bottomBar = {
 				TextArea(scrollState)
@@ -67,6 +58,9 @@ fun GamePage(
 							if (timeLeft <= 0) {
 								cacheAppData.updateCurrentGame()
 								cacheAppData.joinCurrentGame()
+								cacheAppData.updateMessages()
+								cacheAppData.updateMembers()
+								cacheAppData.updateWaitingRoom()
 							}
 							delay(999)
 						}

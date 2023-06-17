@@ -18,7 +18,6 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.unit.dp
 import io.github.aifiltration.LOGGER
 import io.github.aifiltration.api.actions.createMessage
-import io.github.aifiltration.api.actions.getMessages
 import io.github.aifiltration.cacheAppData
 import io.github.aifiltration.composables.UserAvatar
 import io.github.aifiltration.composables.moveFocusOnTab
@@ -100,6 +99,6 @@ private fun sendMessage(text: String, scrollState: LazyListState, coroutineScope
 		val response = createMessage(gameId, text).onFailure {
 			LOGGER.error("Failed to send message", it)
 		}
-		if (response.isSuccess) messages = getMessages(gameId).getOrThrow()
+		if (response.isSuccess) cacheAppData.updateMessages()
 		scrollState.animateScrollToItem(0)
 	}

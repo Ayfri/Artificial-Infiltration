@@ -12,29 +12,20 @@ import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import io.github.aifiltration.api.actions.waitingList
+import io.github.aifiltration.cacheAppData
 import io.github.aifiltration.composables.UserAvatar
 import io.github.aifiltration.theme.purple600
 import io.github.aifiltration.types.User
-import kotlinx.coroutines.delay
-
-var waitingUsers by mutableStateOf(listOf<User>())
 
 @Composable
 @Preview
 fun WaitingRoom() {
-//	val waitingUsers = (1..10).map { User(it, "User $it") }
-	LaunchedEffect(waitingUsers) {
-		while (true) {
-			waitingUsers = waitingList().getOrThrow()
-			delay(10000)
-		}
-	}
+	cacheAppData.UpdateWaitingRoomEffect()
 
 	Column {
 		Text(
@@ -52,7 +43,7 @@ fun WaitingRoom() {
 				state = scrollState,
 				modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
 			) {
-				items(waitingUsers) {
+				items(cacheAppData.waitingRoom.value) {
 					WaitingMember(it)
 				}
 			}
