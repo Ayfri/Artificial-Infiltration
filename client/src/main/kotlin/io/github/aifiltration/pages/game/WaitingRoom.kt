@@ -1,27 +1,41 @@
 package io.github.aifiltration.pages.game
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.VerticalScrollbar
+import androidx.compose.foundation.defaultScrollbarStyle
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import io.github.aifiltration.api.actions.waitingList
 import io.github.aifiltration.composables.UserAvatar
 import io.github.aifiltration.theme.purple600
 import io.github.aifiltration.types.User
+import kotlinx.coroutines.delay
+
+var waitingUsers by mutableStateOf(listOf<User>())
 
 @Composable
 @Preview
 fun WaitingRoom() {
-	val waitingUsers = (1..10).map { User(it, "User $it") }
+//	val waitingUsers = (1..10).map { User(it, "User $it") }
+	LaunchedEffect(waitingUsers) {
+		while (true) {
+			waitingUsers = waitingList().getOrThrow()
+			delay(10000)
+		}
+	}
+
 	Column {
 		Text(
 			"Waiting room",
@@ -44,10 +58,8 @@ fun WaitingRoom() {
 			}
 
 			VerticalScrollbar(
-				modifier = Modifier.align(Alignment.TopEnd).background(purple600, MaterialTheme.shapes.small),
-				adapter = rememberScrollbarAdapter(
-					scrollState = scrollState,
-				),
+				modifier = Modifier.align(Alignment.TopEnd),
+				adapter = rememberScrollbarAdapter(scrollState),
 				style = defaultScrollbarStyle().copy(
 					thickness = 10.dp,
 					hoverColor = MaterialTheme.colors.primaryVariant,

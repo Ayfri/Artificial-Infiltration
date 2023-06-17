@@ -8,6 +8,7 @@ fun Application.usersRoutes() {
 	routing {
 		auth {
 			me()
+			waitingList()
 		}
 	}
 }

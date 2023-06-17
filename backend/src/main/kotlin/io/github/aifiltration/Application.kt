@@ -1,5 +1,6 @@
 package io.github.aifiltration
 
+import io.github.aifiltration.models.User
 import io.github.aifiltration.plugins.configureAuth
 import io.github.aifiltration.plugins.configureContentNegotiation
 import io.github.aifiltration.plugins.configureMonitoring
@@ -10,7 +11,10 @@ import io.ktor.server.cio.*
 import io.ktor.server.engine.*
 import kotlinx.coroutines.runBlocking
 
+const val MAX_PLAYERS = 5
+
 lateinit var currentGame: PlayingGame
+val waitingList = mutableSetOf<User>()
 
 fun main() {
 	embeddedServer(
