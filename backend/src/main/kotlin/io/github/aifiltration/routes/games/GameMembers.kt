@@ -4,7 +4,6 @@ import io.github.aifiltration.MAX_PLAYERS
 import io.github.aifiltration.database.Tables
 import io.github.aifiltration.database.database
 import io.github.aifiltration.models.UserGame
-import io.github.aifiltration.models.game
 import io.github.aifiltration.models.user
 import io.github.aifiltration.models.userGame
 import io.github.aifiltration.plugins.UserSession
@@ -29,20 +28,10 @@ fun Route.joinGame() = post("/games/{id}/join") {
 		return@post
 	}
 
-	val entityStore = database.runQuery {
-		QueryDsl.from(Tables.game).where {
-			Tables.game.id eq id
-		}.innerJoin(Tables.userGame) {
-			Tables.userGame.gameId eq Tables.game.id
-		}.includeAll()
-	}
-
-	val members = entityStore[Tables.userGame]
-	val game = entityStore[Tables.game].firstOrNull()
-
-	if (game == null) {
-		call.respond(HttpStatusCode.NotFound)
-		return@post
+	val members = database.runQuery {
+		QueryDsl.from(Tables.userGame).where {
+			Tables.userGame.gameId eq id
+		}
 	}
 
 	if (members.size < MAX_PLAYERS) {
@@ -51,10 +40,15 @@ fun Route.joinGame() = post("/games/{id}/join") {
 				QueryDsl.insert(Tables.userGame).single(UserGame(id, userSession.userId))
 			}
 		}.onFailure {
-			if (it is UniqueConstraintException) call.respond(
-				HttpStatusCode.Conflict,
-				"You are already a member of this game."
-			)
+			when (it) {
+				is UniqueConstraintException -> call.respond(
+					HttpStatusCode.Conflict,
+					"You are already a member of this game."
+				)
+
+				is NoSuchElementException -> call.respond(HttpStatusCode.NotFound, "Game not found.")
+				else -> call.respond(HttpStatusCode.InternalServerError)
+			}
 		}
 
 		call.respond(HttpStatusCode.OK)

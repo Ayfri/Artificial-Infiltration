@@ -34,7 +34,7 @@ fun main() = singleWindowApplication(
 			runBlocking {
 				val gameId = currentGame().getOrThrow().id
 				storage["gameId"] = gameId.toString()
-				cacheAppData.updateCurrentUser()
+				if (cacheAppData.currentUser.id == 0) cacheAppData.updateCurrentUser()
 				joinGame(gameId)
 			}.onFailure {
 				storage.remove("gameId")

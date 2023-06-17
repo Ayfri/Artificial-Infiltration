@@ -47,6 +47,6 @@ fun MessageList(scrollState: LazyListState) {
 fun Message(message: Message) {
 	Row {
 		UserAvatar(message.author)
-		MessageBox(message.content)
+		MessageBox(message)
 	}
 }
