@@ -11,6 +11,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
@@ -21,18 +23,23 @@ import io.github.aifiltration.api.actions.createMessage
 import io.github.aifiltration.cacheAppData
 import io.github.aifiltration.composables.UserAvatar
 import io.github.aifiltration.composables.moveFocusOnTab
+import io.github.aifiltration.theme.purple700
 import io.github.aifiltration.theme.purple800
 import io.github.aifiltration.theme.purple900
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 const val MAX_MESSAGE_LENGTH = 140
+const val COOLDOWN = 3
+var cooldown by mutableStateOf(0)
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TextArea(scrollState: LazyListState) {
 	var text by remember { mutableStateOf("") }
 	val scope = rememberCoroutineScope()
+	val focusRequester = remember { FocusRequester() }
 
 	Row(
 		modifier = Modifier
@@ -45,11 +52,13 @@ fun TextArea(scrollState: LazyListState) {
 		UserAvatar(cacheAppData.currentUser)
 		TextField(
 			value = text,
+			enabled = cooldown == 0,
 			onValueChange = {
 				if (it.length <= MAX_MESSAGE_LENGTH) text = it.replace(Regex("[\n\t\r]"), "")
 			},
 			placeholder = {
-				Text("Type something sussy...", style = MaterialTheme.typography.body1)
+				if (cooldown > 0) Text("($cooldown) Type something sussy...", style = MaterialTheme.typography.body1)
+				else Text("Type something sussy...", style = MaterialTheme.typography.body1)
 			},
 			shape = MaterialTheme.shapes.large,
 			colors = TextFieldDefaults.textFieldColors(
@@ -65,9 +74,10 @@ fun TextArea(scrollState: LazyListState) {
 			modifier = Modifier
 				.fillMaxWidth(.92f)
 				.moveFocusOnTab()
+				.focusRequester(focusRequester)
 				.onKeyEvent {
 					if (it.key == Key.Enter || it.key == Key.NumPadEnter) {
-						sendMessage(text, scrollState, scope)
+						sendMessage(text, focusRequester, scrollState, scope)
 						text = ""
 						true
 					} else false
@@ -75,26 +85,44 @@ fun TextArea(scrollState: LazyListState) {
 		)
 
 		IconButton(
-			onClick = {
-				sendMessage(text, scrollState, scope)
-				text = ""
-			},
+			enabled = cooldown == 0,
 			modifier = Modifier
 				.background(purple900, shape = CircleShape)
-				.size(60.dp)
+				.size(60.dp),
+			onClick = {
+				sendMessage(text, focusRequester, scrollState, scope)
+				text = ""
+			}
 		) {
 			Icon(
 				Icons.Filled.Send,
 				contentDescription = "Send",
 				modifier = Modifier.size(32.dp),
-				tint = MaterialTheme.colors.primary
+				tint = if (cooldown == 0) MaterialTheme.colors.primary else purple700
 			)
 		}
 	}
 }
 
-private fun sendMessage(text: String, scrollState: LazyListState, coroutineScope: CoroutineScope) =
+private fun sendMessage(
+	text: String,
+	focusRequester: FocusRequester,
+	scrollState: LazyListState,
+	coroutineScope: CoroutineScope,
+) =
 	coroutineScope.launch {
+		cooldown = COOLDOWN
+		coroutineScope.launch {
+			while (cooldown > 0) {
+				delay(1000)
+				cooldown--
+			}
+
+			delay(20)
+
+			focusRequester.requestFocus()
+		}
+
 		val gameId = cacheAppData.currentGame!!.id
 		val response = createMessage(gameId, text).onFailure {
 			LOGGER.error("Failed to send message", it)

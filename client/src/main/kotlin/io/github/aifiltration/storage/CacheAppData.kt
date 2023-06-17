@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import io.github.aifiltration.LOGGER
 import io.github.aifiltration.api.actions.*
 import io.github.aifiltration.types.Game
 import io.github.aifiltration.types.Message
@@ -34,7 +33,6 @@ data class CacheAppData(
 
 	suspend fun updateMessages() {
 		messages.value = getMessages(currentGame!!.id).getOrThrow()
-		LOGGER.info("Updated messages to $messages")
 	}
 
 	suspend fun updateWaitingRoom() {
