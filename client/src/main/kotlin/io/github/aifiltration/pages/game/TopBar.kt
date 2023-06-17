@@ -27,7 +27,6 @@ import io.github.aifiltration.anonymousNames
 import io.github.aifiltration.api.actions.vote
 import io.github.aifiltration.composables.UserAvatar
 import io.github.aifiltration.storage
-import io.github.aifiltration.theme.green200
 import io.github.aifiltration.theme.green400
 import io.github.aifiltration.theme.purple650
 import io.github.aifiltration.types.User
@@ -91,7 +90,7 @@ fun MemberComponent(user: User, hasVoted: MutableState<Boolean>) {
 				.width(175.dp),
 			verticalAlignment = Alignment.CenterVertically
 		) {
-			UserAvatar(user, if (isVoted) green200 else null)
+			UserAvatar(user)
 			Box(
 				modifier = Modifier.fillMaxWidth()
 			) {
