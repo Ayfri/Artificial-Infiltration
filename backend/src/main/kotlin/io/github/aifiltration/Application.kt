@@ -9,7 +9,10 @@ import io.github.aifiltration.routes.configureRouting
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 const val MAX_PLAYERS = 5
 
@@ -33,7 +36,11 @@ fun Application.module() {
 	configureRouting()
 	configureSessions()
 
-	runBlocking {
-		currentGame = createGame()
+	val gameCreationScope = CoroutineScope(Dispatchers.Default)
+	gameCreationScope.launch {
+		while (true) {
+			currentGame = createGame()
+			delay(PlayingGame.GAME_DURATION * 1000L)
+		}
 	}
 }

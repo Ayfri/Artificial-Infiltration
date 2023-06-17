@@ -8,7 +8,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.singleWindowApplication
-import io.github.aifiltration.api.actions.joinGame
 import io.github.aifiltration.api.actions.login
 import io.github.aifiltration.pages.LoginPage
 import io.github.aifiltration.pages.SignUpPage
@@ -32,8 +31,7 @@ fun main() = singleWindowApplication(
 			runBlocking {
 				cacheAppData.updateCurrentGame()
 				if (cacheAppData.currentUser.id == 0) cacheAppData.updateCurrentUser()
-
-				joinGame(cacheAppData.currentGame!!.id)
+				cacheAppData.joinCurrentGame()
 			}.onFailure {
 				cacheAppData.currentGame = null
 				isLoggedIn.value = false

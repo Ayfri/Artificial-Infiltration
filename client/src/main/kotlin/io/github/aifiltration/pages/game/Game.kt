@@ -63,6 +63,11 @@ fun GamePage(
 							val gameLength = cacheAppData.currentGame!!.length
 							timeLeft =
 								(gameLength - (System.currentTimeMillis() - createdInstant.toEpochMilliseconds()) / 1000).toInt()
+
+							if (timeLeft <= 0) {
+								cacheAppData.updateCurrentGame()
+								cacheAppData.joinCurrentGame()
+							}
 							delay(999)
 						}
 					}
