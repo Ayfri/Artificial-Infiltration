@@ -8,9 +8,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.aifiltration.api.actions.getMessages
+import io.github.aifiltration.cacheAppData
 import io.github.aifiltration.composables.MessageBox
 import io.github.aifiltration.composables.UserAvatar
-import io.github.aifiltration.storage
 import io.github.aifiltration.types.Message
 import kotlinx.coroutines.delay
 
@@ -20,7 +20,7 @@ var messages by mutableStateOf(listOf<Message>())
 fun MessageList(scrollState: LazyListState) {
 	LaunchedEffect(messages) {
 		while (true) {
-			messages = getMessages(storage["gameId"]!!.toInt()).getOrThrow()
+			messages = getMessages(cacheAppData.currentGame!!.id).getOrThrow()
 			delay(20000)
 		}
 	}

@@ -8,7 +8,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.singleWindowApplication
-import io.github.aifiltration.api.actions.currentGame
 import io.github.aifiltration.api.actions.joinGame
 import io.github.aifiltration.api.actions.login
 import io.github.aifiltration.pages.LoginPage
@@ -17,10 +16,9 @@ import io.github.aifiltration.pages.game.GamePage
 import io.github.aifiltration.storage.CacheAppData
 import io.github.aifiltration.storage.Storage
 import io.github.aifiltration.theme.AITheme
-import io.github.aifiltration.types.User
 import kotlinx.coroutines.runBlocking
 
-val cacheAppData by mutableStateOf(CacheAppData(User(0, "User 0")))
+val cacheAppData by mutableStateOf(CacheAppData())
 val storage by mutableStateOf(Storage("config.json")).apply { value.load() }
 
 fun main() = singleWindowApplication(
@@ -32,13 +30,12 @@ fun main() = singleWindowApplication(
 
 		if (isLoggedIn.value) {
 			runBlocking {
-				val gameId = currentGame().getOrThrow().id
-				storage["gameId"] = gameId.toString()
+				cacheAppData.updateCurrentGame()
 				if (cacheAppData.currentUser.id == 0) cacheAppData.updateCurrentUser()
-				joinGame(gameId)
+
+				joinGame(cacheAppData.currentGame!!.id)
 			}.onFailure {
-				storage.remove("gameId")
-				storage.save()
+				cacheAppData.currentGame = null
 				isLoggedIn.value = false
 			}
 

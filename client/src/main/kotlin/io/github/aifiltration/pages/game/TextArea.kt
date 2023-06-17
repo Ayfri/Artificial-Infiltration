@@ -22,7 +22,6 @@ import io.github.aifiltration.api.actions.getMessages
 import io.github.aifiltration.cacheAppData
 import io.github.aifiltration.composables.UserAvatar
 import io.github.aifiltration.composables.moveFocusOnTab
-import io.github.aifiltration.storage
 import io.github.aifiltration.theme.purple800
 import io.github.aifiltration.theme.purple900
 import kotlinx.coroutines.CoroutineScope
@@ -97,7 +96,7 @@ fun TextArea(scrollState: LazyListState) {
 
 private fun sendMessage(text: String, scrollState: LazyListState, coroutineScope: CoroutineScope) =
 	coroutineScope.launch {
-		val gameId = storage["gameId"]!!.toInt()
+		val gameId = cacheAppData.currentGame!!.id
 		val response = createMessage(gameId, text).onFailure {
 			LOGGER.error("Failed to send message", it)
 		}

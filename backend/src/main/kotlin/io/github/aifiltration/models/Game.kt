@@ -13,6 +13,8 @@ data class Game(
 	@KomapperAutoIncrement
 	@KomapperId
 	val id: Int = 0,
+	@KomapperIgnore
+	val length: Int = 0,
 	@KomapperCreatedAt
 	val timestamp: Instant = Clock.System.now(),
 )

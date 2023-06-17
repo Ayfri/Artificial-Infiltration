@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import io.github.aifiltration.anonymousNames
 import io.github.aifiltration.api.actions.vote
+import io.github.aifiltration.cacheAppData
 import io.github.aifiltration.composables.UserAvatar
 import io.github.aifiltration.storage
 import io.github.aifiltration.theme.green400
@@ -112,7 +113,7 @@ fun MemberComponent(user: User, hasVoted: MutableState<Boolean>) {
 						.align(Alignment.Center),
 					onClick = {
 						runBlocking {
-							val gameId = storage["gameId"]!!.toInt()
+							val gameId = cacheAppData.currentGame!!.id
 							val response = vote(gameId, user.id).getOrThrow()
 							if (response.status.isSuccess()) {
 								storage["voteTarget"] = user.id.toString()

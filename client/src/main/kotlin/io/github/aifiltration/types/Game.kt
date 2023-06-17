@@ -7,6 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Game(
 	val id: Int,
+	val length: Int,
 	@SerialName("timestamp")
 	val createdAt: Instant,
 )

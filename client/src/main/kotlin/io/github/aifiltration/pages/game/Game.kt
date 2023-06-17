@@ -30,7 +30,7 @@ fun GamePage(
 		val scrollState = rememberLazyListState()
 		LaunchedEffect(members) {
 			while (true) {
-				members = getMembers(storage["gameId"]!!.toInt()).getOrNull() ?: emptyList()
+				members = getMembers(cacheAppData.currentGame!!.id).getOrNull() ?: emptyList()
 				delay(5000)
 			}
 		}
@@ -46,6 +46,26 @@ fun GamePage(
 			Row {
 				Box(modifier = Modifier.padding(innerPadding)) {
 					MessageList(scrollState)
+
+					var timeLeft by remember { mutableStateOf(0) }
+					Text(
+						timeLeft.toString(),
+						color = Color.White,
+						modifier = Modifier
+							.align(Alignment.TopCenter)
+							.padding(top = 10.dp),
+						style = MaterialTheme.typography.body2,
+					)
+
+					LaunchedEffect(timeLeft) {
+						while (true) {
+							val createdInstant = cacheAppData.currentGame!!.createdAt
+							val gameLength = cacheAppData.currentGame!!.length
+							timeLeft =
+								(gameLength - (System.currentTimeMillis() - createdInstant.toEpochMilliseconds()) / 1000).toInt()
+							delay(999)
+						}
+					}
 				}
 
 				Surface(
