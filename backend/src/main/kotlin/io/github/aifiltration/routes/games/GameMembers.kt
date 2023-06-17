@@ -1,6 +1,8 @@
 package io.github.aifiltration.routes.games
 
+import io.github.aifiltration.LOGGER
 import io.github.aifiltration.MAX_PLAYERS
+import io.github.aifiltration.currentGame
 import io.github.aifiltration.database.Tables
 import io.github.aifiltration.database.database
 import io.github.aifiltration.models.UserGame
@@ -28,30 +30,40 @@ fun Route.joinGame() = post("/games/{id}/join") {
 		return@post
 	}
 
+	if (currentGame.id != id) {
+		call.respond(HttpStatusCode.Forbidden, "You can only join the current game.")
+		return@post
+	}
+
 	val members = database.runQuery {
 		QueryDsl.from(Tables.userGame).where {
 			Tables.userGame.gameId eq id
 		}
 	}
 
+	val isMember = members.any { it.userId == userSession.userId }
+	val isWaiting = waitingList.any { (id) -> id == userSession.userId }
+
+	if (isMember || isWaiting) {
+		call.respond(HttpStatusCode.Conflict, "You are already a member of this game.")
+		return@post
+	}
+
 	if (members.size < MAX_PLAYERS) {
 		runCatching {
 			database.runQuery {
-				QueryDsl.insert(Tables.userGame).single(UserGame(id, userSession.userId))
+				QueryDsl.insert(Tables.userGame).single(UserGame(gameId = id, userId = userSession.userId))
 			}
 		}.onFailure {
-			when (it) {
-				is UniqueConstraintException -> call.respond(
-					HttpStatusCode.Conflict,
-					"You are already a member of this game."
-				)
-
-				is NoSuchElementException -> call.respond(HttpStatusCode.NotFound, "Game not found.")
-				else -> call.respond(HttpStatusCode.InternalServerError)
-			}
+			LOGGER.error("Failed to join game.", it)
+			if (it is UniqueConstraintException) call.respond(
+				HttpStatusCode.Conflict,
+				"You are already a member of this game."
+			)
+			else call.respond(HttpStatusCode.InternalServerError)
 		}
 
-		call.respond(HttpStatusCode.OK)
+		call.respond(HttpStatusCode.OK, false)
 		return@post
 	}
 
@@ -67,7 +79,7 @@ fun Route.joinGame() = post("/games/{id}/join") {
 	}
 
 	waitingList += user
-	call.respond(HttpStatusCode.OK)
+	call.respond(HttpStatusCode.OK, true)
 }
 
 fun Route.members() = get("/games/{id}/members") {

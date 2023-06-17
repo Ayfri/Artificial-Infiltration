@@ -7,6 +7,7 @@ import io.github.aifiltration.models.game
 import io.github.aifiltration.models.message
 import io.github.aifiltration.models.userGame
 import io.github.aifiltration.plugins.UserSession
+import io.github.aifiltration.waitingList
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -44,6 +45,11 @@ fun Route.createMessage() = post("/games/{gameId}/messages/create") {
 
 	val gameMembers = entityStore[Tables.userGame].map { it.userId }
 	if (userSession.userId !in gameMembers) {
+		call.respond(HttpStatusCode.Forbidden, "You are not a member of this game.")
+		return@post
+	}
+
+	if (waitingList.any { it.id == userSession.userId }) {
 		call.respond(HttpStatusCode.Forbidden, "You are not a member of this game.")
 		return@post
 	}
