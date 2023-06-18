@@ -17,3 +17,10 @@ __pycache__/
 
 # Logs
 **/logs.txt
+
+# Data files
+**/data.json
+
+# Client files
+**/config.json
+**/cookies.json

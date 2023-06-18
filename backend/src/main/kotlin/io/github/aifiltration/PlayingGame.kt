@@ -6,6 +6,7 @@ import io.github.aifiltration.models.Game
 import io.github.aifiltration.models.game
 import kotlinx.datetime.Instant
 import org.komapper.core.dsl.QueryDsl
+import kotlin.random.Random
 
 class PlayingGame {
 	var id: Int = 0
@@ -30,6 +31,8 @@ class PlayingGame {
 
 	companion object {
 		const val GAME_DURATION = 300
+		val AI_MESSAGE_DELAY
+			get() = Random.nextInt(3, 15)
 	}
 }
 

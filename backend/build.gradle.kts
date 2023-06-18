@@ -3,6 +3,7 @@ val logbackVersion = project.ext["logback.version"] as String
 val komapperVersion = project.ext["komapper.version"] as String
 val kotlinxDateTimeVersion = project.ext["kotlinx.datetime.version"] as String
 val ktorVersion = project.ext["ktor.version"] as String
+val openAIVersion = project.ext["openai.version"] as String
 
 plugins {
 	application
@@ -24,6 +25,9 @@ application {
 }
 
 dependencies {
+	implementation("com.aallam.openai:openai-client:$openAIVersion")
+	implementation("io.ktor:ktor-client-cio-jvm:$ktorVersion")
+
 	implementation("io.github.cdimascio:dotenv-kotlin:$dotenvVersion")
 
 	implementation("org.jetbrains.kotlinx:kotlinx-datetime:$kotlinxDateTimeVersion")
