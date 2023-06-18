@@ -18,6 +18,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import io.github.aifiltration.api.actions.login
 import io.github.aifiltration.composables.*
+import io.github.aifiltration.pages.game.cooldown
 import io.github.aifiltration.storage
 import io.github.aifiltration.theme.green200
 import io.github.aifiltration.theme.green400
@@ -101,6 +102,7 @@ private fun executeLogin(
 				storage.save()
 
 				isLoggedIn.value = true
+				cooldown = 0
 			} else {
 				storage["loggedIn"] = "false"
 				storage.save()
