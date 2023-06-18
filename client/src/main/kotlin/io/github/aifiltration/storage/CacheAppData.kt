@@ -5,6 +5,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import io.github.aifiltration.api.actions.*
+import io.github.aifiltration.api.plugins.FileCookiesStorage
 import io.github.aifiltration.types.Game
 import io.github.aifiltration.types.Message
 import io.github.aifiltration.types.User
@@ -24,7 +25,12 @@ data class CacheAppData(
 	}
 
 	suspend fun updateCurrentUser() {
-		currentUser = me().getOrThrow()
+		val user = me().getOrNull()
+		if (user == null) {
+			FileCookiesStorage.clear()
+			return
+		}
+		currentUser = user
 	}
 
 	suspend fun updateMembers() {

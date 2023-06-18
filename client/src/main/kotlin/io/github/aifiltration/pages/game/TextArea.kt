@@ -9,20 +9,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.input.key.key
-import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.unit.dp
-import io.github.aifiltration.LOGGER
 import io.github.aifiltration.api.actions.createMessage
 import io.github.aifiltration.cacheAppData
 import io.github.aifiltration.composables.UserAvatar
 import io.github.aifiltration.composables.moveFocusOnTab
+import io.github.aifiltration.composables.onEnterKeyPressed
 import io.github.aifiltration.theme.purple700
 import io.github.aifiltration.theme.purple800
 import io.github.aifiltration.theme.purple900
@@ -34,7 +30,6 @@ const val MAX_MESSAGE_LENGTH = 140
 const val COOLDOWN = 3
 var cooldown by mutableStateOf(0)
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TextArea(scrollState: LazyListState) {
 	var text by remember { mutableStateOf("") }
@@ -75,12 +70,9 @@ fun TextArea(scrollState: LazyListState) {
 				.fillMaxWidth(.92f)
 				.moveFocusOnTab()
 				.focusRequester(focusRequester)
-				.onKeyEvent {
-					if (it.key == Key.Enter || it.key == Key.NumPadEnter) {
-						sendMessage(text, focusRequester, scrollState, scope)
-						text = ""
-						true
-					} else false
+				.onEnterKeyPressed {
+					sendMessage(text, focusRequester, scrollState, scope)
+					text = ""
 				}
 		)
 
@@ -124,9 +116,7 @@ private fun sendMessage(
 		}
 
 		val gameId = cacheAppData.currentGame!!.id
-		val response = createMessage(gameId, text).onFailure {
-			LOGGER.error("Failed to send message", it)
-		}
+		val response = createMessage(gameId, text)
 		if (response.isSuccess) cacheAppData.updateMessages()
 		scrollState.animateScrollToItem(0)
 	}

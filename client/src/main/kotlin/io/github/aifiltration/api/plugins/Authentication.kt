@@ -11,7 +11,9 @@ fun HttpClientConfig<*>.configureAuthentication() {
 			credentials {
 				val username = storage["username"] ?: ""
 				val password = storage["password"] ?: ""
-				BasicAuthCredentials(username, password)
+
+				if (username.isEmpty() || password.isEmpty()) null
+				else BasicAuthCredentials(username, password)
 			}
 			realm = "Login"
 		}

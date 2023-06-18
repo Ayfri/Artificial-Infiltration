@@ -5,13 +5,15 @@ import io.ktor.client.*
 import io.ktor.client.plugins.cookies.*
 import io.ktor.http.*
 import io.ktor.util.date.*
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 
 fun HttpClientConfig<*>.configureHttpCookies() {
 	install(HttpCookies) {
-		storage = FileCookiesStorage()
+		storage = FileCookiesStorage
+//		storage = AcceptAllCookiesStorage()
 	}
 }
 
@@ -28,17 +30,22 @@ private data class CookieSerialized(
 	)
 }
 
-private class FileCookiesStorage : CookiesStorage {
+object FileCookiesStorage : CookiesStorage {
 	private val storage = Storage("cookies.json", verbose = true)
 
 	override suspend fun addCookie(requestUrl: Url, cookie: Cookie) {
 		val cookies = getCookies(requestUrl)
 		cookies += CookieSerialized(cookie)
-		storage[getKey(requestUrl)] = storage.json.encodeToString(cookies)
+		storage[getKey(requestUrl)] = storage.json.encodeToString(cookies.removeBadCookies())
 		storage.save()
 	}
 
 	override fun close() {
+		storage.save()
+	}
+
+	fun clear() {
+		storage.clear()
 		storage.save()
 	}
 
@@ -56,10 +63,14 @@ private class FileCookiesStorage : CookiesStorage {
 
 	private fun getKey(requestUrl: Url) = requestUrl.host
 
+	private fun MutableList<CookieSerialized>.removeBadCookies() = run {
+		removeIf { it.expires < Clock.System.now() }
+		distinctBy { it.name }.toMutableList()
+	}
+
 	private fun getCookies(requestUrl: Url) =
-		storage.json.decodeFromString<MutableList<CookieSerialized>>(storage[getKey(requestUrl)] ?: "[]").apply {
-			removeIf { it.expires.toGMTDate() < GMTDate() }
-		}
+		storage.json.decodeFromString<MutableList<CookieSerialized>>(storage[getKey(requestUrl)] ?: "[]")
+			.removeBadCookies()
 }
 
 private fun Instant.toGMTDate() = GMTDate(toEpochMilliseconds())

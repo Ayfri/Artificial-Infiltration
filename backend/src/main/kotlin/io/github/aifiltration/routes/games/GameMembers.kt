@@ -1,6 +1,5 @@
 package io.github.aifiltration.routes.games
 
-import io.github.aifiltration.LOGGER
 import io.github.aifiltration.MAX_PLAYERS
 import io.github.aifiltration.currentGame
 import io.github.aifiltration.database.Tables
@@ -21,7 +20,7 @@ import org.komapper.core.dsl.query.first
 
 fun Route.joinGame() = post("/games/{id}/join") {
 	val userSession = call.sessions.get<UserSession>() ?: run {
-		call.respond(HttpStatusCode.Unauthorized, "You must be logged in to create a message.")
+		call.respond(HttpStatusCode.Unauthorized, "You must be logged in to join the game.")
 		return@post
 	}
 
@@ -55,7 +54,6 @@ fun Route.joinGame() = post("/games/{id}/join") {
 				QueryDsl.insert(Tables.userGame).single(UserGame(gameId = id, userId = userSession.userId))
 			}
 		}.onFailure {
-			LOGGER.error("Failed to join game.", it)
 			if (it is UniqueConstraintException) call.respond(
 				HttpStatusCode.Conflict,
 				"You are already a member of this game."

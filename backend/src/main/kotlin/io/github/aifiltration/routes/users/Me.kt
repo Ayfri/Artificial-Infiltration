@@ -1,6 +1,5 @@
 package io.github.aifiltration.routes.users
 
-import io.github.aifiltration.LOGGER
 import io.github.aifiltration.database.Tables
 import io.github.aifiltration.database.database
 import io.github.aifiltration.models._User.Companion.user
@@ -16,7 +15,6 @@ import org.komapper.core.dsl.query.firstOrNull
 
 fun Route.me() = get("/me") {
 	val session = call.sessions.get<UserSession>() ?: run {
-		LOGGER.info("No session")
 		call.respond(HttpStatusCode.Unauthorized)
 		return@get
 	}
@@ -24,8 +22,6 @@ fun Route.me() = get("/me") {
 	val user = database.runQuery {
 		QueryDsl.from(Tables.user).where { user.id eq session.userId }.firstOrNull()
 	}
-
-	LOGGER.info("User : $user")
 
 	if (user == null) {
 		call.respond(HttpStatusCode.Unauthorized)

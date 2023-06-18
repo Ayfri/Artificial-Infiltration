@@ -16,9 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import io.github.aifiltration.LOGGER
 import io.github.aifiltration.api.actions.login
-import io.github.aifiltration.cacheAppData
 import io.github.aifiltration.composables.*
 import io.github.aifiltration.storage
 import io.github.aifiltration.theme.green200
@@ -40,9 +38,10 @@ fun LoginPage(
 
 			Column(
 				horizontalAlignment = Alignment.CenterHorizontally,
-				modifier = Modifier.fillMaxWidth(),
+				modifier = Modifier.fillMaxWidth().onEnterKeyPressed {
+					executeLogin(username, password, isLoggedIn)
+				},
 			) {
-
 				Title("Login", color = MaterialTheme.colors.onPrimary, modifier = Modifier.padding(top = 16.dp))
 				Spacer(modifier = Modifier.padding(top = 60.dp))
 
@@ -58,7 +57,7 @@ fun LoginPage(
 					placeholder = "Password",
 					keyboardType = KeyboardType.Password,
 					icon = { Icon(Icons.Filled.Lock, contentDescription = "Password") },
-					onValueChange = { password = it }
+					onValueChange = { password = it },
 				)
 			}
 
@@ -67,23 +66,7 @@ fun LoginPage(
 				modifier = Modifier.fillMaxWidth(),
 			) {
 				AuthButton("Login", color1 = green400, color2 = green200) {
-					storage["username"] = username
-					storage["password"] = password
-					storage.save()
-
-					runCatching {
-						runBlocking {
-							val response = login()
-							if (response.isSuccess && response.getOrNull()?.status == HttpStatusCode.OK) {
-								cacheAppData.updateCurrentUser()
-								storage["loggedIn"] = "true"
-								storage.save()
-								isLoggedIn.value = true
-							}
-						}
-					}.onFailure {
-						LOGGER.error("Failed to login", it)
-					}
+					executeLogin(username, password, isLoggedIn)
 				}
 
 				Text(
@@ -96,6 +79,31 @@ fun LoginPage(
 				AuthButton("Sign up", color1 = pink500, color2 = pink300) {
 					isOnLoginPage.value = false
 				}
+			}
+		}
+	}
+}
+
+private fun executeLogin(
+	username: String,
+	password: String,
+	isLoggedIn: MutableState<Boolean>,
+) {
+	storage["username"] = username
+	storage["password"] = password
+	storage.save()
+
+	runCatching {
+		runBlocking {
+			val response = login()
+			if (response.isSuccess && response.getOrNull()?.status == HttpStatusCode.OK) {
+				storage["loggedIn"] = "true"
+				storage.save()
+
+				isLoggedIn.value = true
+			} else {
+				storage["loggedIn"] = "false"
+				storage.save()
 			}
 		}
 	}

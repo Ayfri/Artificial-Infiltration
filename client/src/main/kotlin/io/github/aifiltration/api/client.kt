@@ -7,9 +7,17 @@ import io.github.aifiltration.api.plugins.configureMonitoring
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 
-val client = HttpClient(CIO) {
+private var baseClient = HttpClient(CIO) {
 	configureAuthentication()
 	configureContentNegotiation()
 	configureHttpCookies()
 	configureMonitoring()
 }
+
+val client: HttpClient
+	get() {
+		baseClient = baseClient.config {
+			configureAuthentication()
+		}
+		return baseClient
+	}

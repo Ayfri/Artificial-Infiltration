@@ -15,6 +15,7 @@ import io.github.aifiltration.pages.game.GamePage
 import io.github.aifiltration.storage.CacheAppData
 import io.github.aifiltration.storage.Storage
 import io.github.aifiltration.theme.AITheme
+import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 
 val cacheAppData by mutableStateOf(CacheAppData())
@@ -28,17 +29,32 @@ fun main() = singleWindowApplication(
 		val isLoggedIn = mutableStateOf(storage["loggedIn"] == "true" && !storage["username"].isNullOrBlank())
 
 		if (isLoggedIn.value) {
-			runBlocking {
-				cacheAppData.updateCurrentGame()
-				if (cacheAppData.currentUser.id == 0) cacheAppData.updateCurrentUser()
-				cacheAppData.joinCurrentGame()
+			runCatching {
+				runBlocking {
+					login()
+					if (cacheAppData.currentUser.id == 0) cacheAppData.updateCurrentUser()
+					cacheAppData.updateCurrentGame()
+					val joinResponse = cacheAppData.joinCurrentGame().getOrThrow()
+					if (joinResponse.status !in listOf(
+							HttpStatusCode.Conflict,
+							HttpStatusCode.Forbidden,
+							HttpStatusCode.OK
+						)
+					) throw Exception(
+						"Could not join game : ${joinResponse.status}"
+					)
+					return@runBlocking
+				}
+
+				GamePage(isLoggedIn)
+				return@AITheme
 			}.onFailure {
 				cacheAppData.currentGame = null
 				isLoggedIn.value = false
-			}
 
-			GamePage(isLoggedIn)
-			return@AITheme
+				storage["loggedIn"] = "false"
+				storage.save()
+			}
 		}
 
 		val isLoginPage = remember { mutableStateOf(true) }
@@ -48,8 +64,6 @@ fun main() = singleWindowApplication(
 		runCatching {
 			runBlocking {
 				if (storage["loggedIn"] == "true") {
-					login()
-					cacheAppData.updateCurrentUser()
 					isLoggedIn.value = true
 				}
 			}

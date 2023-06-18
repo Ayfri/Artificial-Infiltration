@@ -10,6 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.github.aifiltration.api.actions.logout
+import io.github.aifiltration.api.plugins.FileCookiesStorage
 import io.github.aifiltration.cacheAppData
 import io.github.aifiltration.composables.Page
 import io.github.aifiltration.storage
@@ -17,6 +19,7 @@ import io.github.aifiltration.theme.green400
 import io.github.aifiltration.theme.purple700
 import io.github.aifiltration.theme.red200
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun GamePage(
@@ -79,6 +82,12 @@ fun GamePage(
 						) {
 							GameButton("Play Again", green400)
 							GameButton("Quit", red200) {
+								runBlocking {
+									logout()
+								}
+
+								FileCookiesStorage.clear()
+
 								storage["loggedIn"] = "false"
 								storage["username"] = ""
 								storage["password"] = ""

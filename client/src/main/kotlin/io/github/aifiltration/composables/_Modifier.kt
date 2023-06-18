@@ -22,3 +22,15 @@ fun Modifier.moveFocusOnTab() = composed {
 		}
 	}
 }
+
+@OptIn(ExperimentalComposeUiApi::class)
+fun Modifier.onEnterKeyPressed(onEnterPressed: () -> Unit) = composed {
+	onPreviewKeyEvent {
+		if (it.type == KeyEventType.KeyDown && (it.key == Key.Enter || it.key == Key.NumPadEnter)) {
+			onEnterPressed()
+			true
+		} else {
+			false
+		}
+	}
+}

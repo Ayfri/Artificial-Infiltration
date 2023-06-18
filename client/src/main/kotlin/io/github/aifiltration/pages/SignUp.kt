@@ -36,17 +36,20 @@ fun SignUpPage(
 			var username by rememberSaveable { mutableStateOf("") }
 			var password by rememberSaveable { mutableStateOf("") }
 			var confirmPassword by rememberSaveable { mutableStateOf("") }
+
 			Column(
 				horizontalAlignment = Alignment.CenterHorizontally,
-				modifier = Modifier.fillMaxWidth(),
+				modifier = Modifier.fillMaxWidth().onEnterKeyPressed {
+					executeSignIn(username, password)
+				},
 			) {
 				Title(
 					"Create Account",
 					color = MaterialTheme.colors.onPrimary,
 					modifier = Modifier.padding(top = 16.dp)
 				)
-				Spacer(modifier = Modifier.padding(top = 60.dp))
 
+				Spacer(modifier = Modifier.padding(top = 60.dp))
 
 				AuthInput(
 					value = username,
@@ -77,9 +80,7 @@ fun SignUpPage(
 				modifier = Modifier.fillMaxWidth(),
 			) {
 				AuthButton("Sign up", color1 = pink500, color2 = pink300) {
-					runBlocking {
-						registerUser(username, password)
-					}
+					executeSignIn(username, password)
 				}
 
 				Text(
@@ -94,5 +95,11 @@ fun SignUpPage(
 				}
 			}
 		}
+	}
+}
+
+private fun executeSignIn(username: String, password: String) {
+	runBlocking {
+		registerUser(username, password)
 	}
 }
