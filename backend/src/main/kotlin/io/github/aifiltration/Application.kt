@@ -73,7 +73,7 @@ fun Application.module() {
 				}
 			}
 
-			if (members.size < 2) continue
+			if (members.size < 3) continue
 
 			val messages = database.runQuery {
 				QueryDsl.from(Tables.message).where {
