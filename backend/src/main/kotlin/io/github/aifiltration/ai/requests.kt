@@ -4,6 +4,7 @@ import com.aallam.openai.api.BetaOpenAI
 import com.aallam.openai.api.chat.ChatMessage
 import com.aallam.openai.api.chat.ChatRole
 import com.aallam.openai.api.chat.chatCompletionRequest
+import com.aallam.openai.api.completion.completionRequest
 import io.github.aifiltration.LOGGER
 
 @OptIn(BetaOpenAI::class)
@@ -52,3 +53,41 @@ suspend fun chatCompletionRequest(
 		)
 	}
 }).choices.first().message
+
+
+suspend fun completionRequest(
+	chatCompletionMessages: List<ChatCompletionMessage> = emptyList(),
+) = openAiClient.completion(completionRequest {
+	maxTokens = 40
+	model = modelId
+	temperature = 0.1
+//	this.
+
+	/* 	val defaultMessage = ChatMessage(
+			role = ChatRole.System,
+			content = defaultPrompt,
+		) */
+
+	/* 	val promptMessages = mutableListOf(defaultMessage)
+		promptMessages += chatCompletionMessages.map {
+			ChatMessage(
+				role = if (it.fromAI) ChatRole.Assistant else ChatRole.User,
+				content = it.content,
+				name = it.author.replace(Regex("\\s"), "_"),
+			)
+		}
+
+		LOGGER.info(
+			"Prompt messages: ${promptMessages.joinToString("\n") { "${it.name}: ${it.content}" }}"
+		) */
+
+	prompt = defaultPrompt + chatCompletionMessages.joinToString("\n", "\n") { "${it.author}: ${it.content}" }
+
+	/* prompt = promptMessages.map {
+		ChatMessage(
+			role = it.role,
+			content = "${it.name}: ${it.content}",
+			name = it.name,
+		)
+	}.joinToString("\n") { "${it.name}: ${it.content}" } */
+}).choices.first().text

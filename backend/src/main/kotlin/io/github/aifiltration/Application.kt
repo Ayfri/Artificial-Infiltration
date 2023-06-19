@@ -3,9 +3,7 @@
 package io.github.aifiltration
 
 import com.aallam.openai.api.BetaOpenAI
-import io.github.aifiltration.ai.AI_ID
-import io.github.aifiltration.ai.chatCompletionRequest
-import io.github.aifiltration.ai.queryChatCompletionMessages
+import io.github.aifiltration.ai.*
 import io.github.aifiltration.database.Tables
 import io.github.aifiltration.database.database
 import io.github.aifiltration.models.*
@@ -18,10 +16,7 @@ import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
 import io.ktor.util.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.datetime.Clock
 import org.komapper.core.dsl.QueryDsl
 
@@ -47,6 +42,16 @@ fun Application.module() {
 	configureMonitoring()
 	configureRouting()
 	configureSessions()
+
+	runBlocking {
+//		deleteFile()
+//		println(files())
+//		deleteAllFiles()
+		val uploadedFile = uploadFile()
+//		println(files())
+		fineTuning(uploadedFile.id)
+//		exitProcess(0)
+	}
 
 	val gameCreationScope = CoroutineScope(Dispatchers.Default)
 	gameCreationScope.launch {
@@ -87,12 +92,13 @@ fun Application.module() {
 
 			// TODO: Fix messages not follow the prompt all the time, use GPT 3 instead of GPT 3.5
 			val chatCompletionMessages = queryChatCompletionMessages(currentGame.id)
-			val aiMessage = chatCompletionRequest(chatCompletionMessages)!!
+//			val aiMessage = chatCompletionRequest(chatCompletionMessages)!!
+			val aiMessage = completionRequest(chatCompletionMessages)
 			LOGGER.debug("AI message: $aiMessage")
 			database.runQuery {
 				QueryDsl.insert(Tables.message).single(
 					Message(
-						content = aiMessage.content.take(140),
+						content = aiMessage.replace(Regex("^\\w+:"), "").take(140),
 						authorId = AI_ID,
 						gameId = currentGame.id
 					)

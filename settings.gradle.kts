@@ -2,6 +2,7 @@ rootProject.name = "Artificial-Infiltration"
 
 include("backend")
 include("client")
+include("data")
 
 pluginManagement {
 	repositories {
