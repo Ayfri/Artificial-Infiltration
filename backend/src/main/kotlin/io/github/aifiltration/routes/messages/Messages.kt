@@ -1,10 +1,12 @@
 package io.github.aifiltration.routes.messages
 
+import io.github.aifiltration.anonymousNames
 import io.github.aifiltration.database.Tables
 import io.github.aifiltration.database.database
 import io.github.aifiltration.models.User
 import io.github.aifiltration.models.message
 import io.github.aifiltration.models.user
+import io.github.aifiltration.usedNames
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -41,7 +43,13 @@ fun Route.messages() = get("/games/{gameId}/messages") {
 	val messageAuthors = entityStore.oneToMany(Tables.user, Tables.message)
 	val messages = messageAuthors.map { (user, messages) ->
 		messages.map { (id, content, _, _, timestamp) ->
-			MessagePayload(id, content, user, gameId, timestamp)
+			MessagePayload(
+				id = id,
+				content = content,
+				author = User(user.id, usedNames.getOrPut(id) { anonymousNames[messageAuthors.keys.indexOf(user)] }),
+				gameId = gameId,
+				timestamp = timestamp
+			)
 		}
 	}.flatten()
 

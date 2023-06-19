@@ -1,14 +1,13 @@
 package io.github.aifiltration.routes.games
 
-import io.github.aifiltration.MAX_PLAYERS
-import io.github.aifiltration.currentGame
+import io.github.aifiltration.*
 import io.github.aifiltration.database.Tables
 import io.github.aifiltration.database.database
+import io.github.aifiltration.models.User
 import io.github.aifiltration.models.UserGame
 import io.github.aifiltration.models.user
 import io.github.aifiltration.models.userGame
 import io.github.aifiltration.plugins.UserSession
-import io.github.aifiltration.waitingList
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -94,7 +93,9 @@ fun Route.members() = get("/games/{id}/members") {
 		}.includeAll()
 	}
 
-	val members = entityStore[Tables.user]
+	val members = entityStore[Tables.user].mapIndexed { index, user ->
+		User(user.id, usedNames.getOrPut(id) { anonymousNames[index] })
+	}
 
 	call.respond(HttpStatusCode.OK, members)
 }

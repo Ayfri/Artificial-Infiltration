@@ -32,11 +32,12 @@ class PlayingGame {
 	companion object {
 		const val GAME_DURATION = 300
 		val AI_MESSAGE_DELAY
-			get() = Random.nextInt(3, 15)
+			get() = Random.nextInt(5, 10)
 	}
 }
 
 suspend fun createGame() = PlayingGame().apply {
 	saveGame()
+	anonymousNames = anonymousNames.shuffled()
 	LOGGER.debug("Created game $id.")
 }

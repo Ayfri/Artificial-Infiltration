@@ -5,6 +5,8 @@ import com.aallam.openai.api.chat.ChatMessage
 import com.aallam.openai.api.chat.ChatRole
 import com.aallam.openai.api.chat.chatCompletionRequest
 import io.github.aifiltration.LOGGER
+import io.github.aifiltration.usedNames
+import java.text.Normalizer
 
 @OptIn(BetaOpenAI::class)
 suspend fun chatCompletionRequest(
@@ -15,7 +17,7 @@ suspend fun chatCompletionRequest(
 
 	val defaultMessage = ChatMessage(
 		role = ChatRole.System,
-		content = defaultPrompt,
+		content = defaultPrompt.format(usedNames[AI_ID]),
 	)
 
 	val promptMessages = mutableListOf(defaultMessage)
@@ -23,20 +25,20 @@ suspend fun chatCompletionRequest(
 		ChatMessage(
 			role = ChatRole.User,
 			content = it.content,
-			name = it.author.replace(Regex("\\s"), "_")
+			name = it.author
 		)
 	}
 
 	promptMessages += ChatMessage(
 		role = ChatRole.System,
-		content = "Starting conversation:",
+		content = "Début de la vraie conversation:",
 	)
 
 	promptMessages += chatCompletionMessages.map {
 		ChatMessage(
 			role = if (it.fromAI) ChatRole.Assistant else ChatRole.User,
 			content = it.content,
-			name = it.author.replace(Regex("\\s"), "_"),
+			name = it.author,
 		)
 	}
 
@@ -47,8 +49,15 @@ suspend fun chatCompletionRequest(
 	messages = promptMessages.map {
 		ChatMessage(
 			role = it.role,
-			content = "${it.name}: ${it.content}",
-			name = it.name,
+			content = if (it.role == ChatRole.User) "${it.name}: ${it.content}" else it.content,
+			name = it.name?.removeNonSpacingMarks()?.removeBlankCharacters(),
 		)
 	}
-}).choices.first().message
+}).choices.first().message?.content?.replace(Regex("^.*: "), "")
+
+suspend fun models() = openAiClient.models()
+
+private fun String.removeNonSpacingMarks() =
+	Normalizer.normalize(this, Normalizer.Form.NFD).replace("\\p{Mn}+".toRegex(), "")
+
+private fun String.removeBlankCharacters() = replace("\\s".toRegex(), "")
