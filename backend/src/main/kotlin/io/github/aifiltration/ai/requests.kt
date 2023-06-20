@@ -5,6 +5,9 @@ import com.aallam.openai.api.chat.ChatMessage
 import com.aallam.openai.api.chat.ChatRole
 import com.aallam.openai.api.chat.chatCompletionRequest
 import io.github.aifiltration.usedNames
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import java.text.Normalizer
 
 @OptIn(BetaOpenAI::class)
@@ -16,7 +19,10 @@ suspend fun chatCompletionRequest(
 
 	val defaultMessage = ChatMessage(
 		role = ChatRole.System,
-		content = defaultPrompt.format(usedNames[AI_ID]),
+		content = defaultPrompt.format(
+			Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
+			usedNames[AI_ID]
+		),
 	)
 
 	val promptMessages = mutableListOf(defaultMessage)
