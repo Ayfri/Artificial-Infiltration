@@ -5,11 +5,11 @@ import io.github.aifiltration.currentGame
 import io.github.aifiltration.database.Tables
 import io.github.aifiltration.database.database
 import io.github.aifiltration.gameCooldown
+import io.github.aifiltration.getAnonymousColor
+import io.github.aifiltration.getAnonymousName
 import io.github.aifiltration.models.User
 import io.github.aifiltration.models.userGame
 import io.github.aifiltration.models.vote
-import io.github.aifiltration.usedColors
-import io.github.aifiltration.usedNames
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -62,7 +62,7 @@ fun Route.votes() = get("/games/{gameId}/votes") {
 
 		VotePayload(
 			authorId = userId,
-			targetUser = User(vote.targetId, usedNames[vote.targetId]!!, usedColors[vote.targetId]!!.rgb),
+			targetUser = User(vote.targetId, getAnonymousName(vote.targetId), getAnonymousColor(vote.targetId).rgb),
 			valid = vote.targetId == AI_ID,
 		)
 	}

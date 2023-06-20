@@ -16,7 +16,6 @@ import io.github.aifiltration.routes.configureRouting
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
-import io.ktor.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -45,7 +44,6 @@ fun main() {
 	).start(wait = true)
 }
 
-@OptIn(InternalAPI::class)
 fun Application.module() {
 	configureAuth()
 	configureContentNegotiation()
@@ -83,6 +81,9 @@ fun Application.module() {
 			if (queries.isNotEmpty()) database.runQuery {
 				queries.reduce { acc, query -> acc.andThen(query) }
 			}
+
+			LOGGER.debug("Game $currentGame ended, cooldown ends at $gameCooldown")
+			// TODO: Fix issue where randomly game isn't finished correctly and client is stuck in cooldown with DISTANT_PAST
 
 			delay(PlayingGame.COOLDOWN_DURATION * 1000L)
 			gameCooldown = Instant.DISTANT_PAST
@@ -129,7 +130,5 @@ fun Application.module() {
 				}
 			}
 		}
-	}.launchOnCancellation {
-		LOGGER.debug("Loop cancelled.")
 	}
 }
