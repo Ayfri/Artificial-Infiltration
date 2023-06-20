@@ -2,7 +2,9 @@ package io.github.aifiltration.pages
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.material.ButtonDefaults.buttonColors
 import androidx.compose.material.icons.Icons
@@ -17,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import io.github.aifiltration.api.actions.leaderboard
 import io.github.aifiltration.composables.Page
 import io.github.aifiltration.theme.*
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -26,11 +29,13 @@ data class LeaderboardEntry(
 	val username: String,
 )
 
+lateinit var lazyColumnState: LazyListState
 var leaderboardList by mutableStateOf(listOf<LeaderboardEntry>())
 var sortedByPoints by mutableStateOf(true)
 
 @Composable
 fun LeaderboardPage(isOnLeaderboard: MutableState<Boolean>) {
+	lazyColumnState = rememberLazyListState()
 	LaunchedEffect(leaderboardList) {
 		leaderboardList = leaderboard().getOrDefault(listOf())
 	}
@@ -67,6 +72,8 @@ fun LeaderboardPage(isOnLeaderboard: MutableState<Boolean>) {
 				) {
 					LeaderboardTitle()
 					LazyColumn(
+						modifier = Modifier.padding(bottom = 48.dp),
+						state = lazyColumnState,
 						verticalArrangement = Arrangement.spacedBy(16.dp),
 					) {
 						itemsIndexed(
@@ -148,6 +155,7 @@ fun SortingLeaderboardButton(
 	enabled: Boolean = true,
 	onClick: () -> Unit,
 ) {
+	val coroutineScope = rememberCoroutineScope()
 	Button(
 		colors = buttonColors(
 			backgroundColor = pink300,
@@ -156,7 +164,12 @@ fun SortingLeaderboardButton(
 		contentPadding = PaddingValues(horizontal = 24.dp, vertical = 16.dp),
 		elevation = ButtonDefaults.elevation(4.dp),
 		enabled = enabled,
-		onClick = onClick,
+		onClick = {
+			onClick()
+			coroutineScope.launch {
+				lazyColumnState.animateScrollToItem(0)
+			}
+		},
 		shape = MaterialTheme.shapes.medium,
 	) {
 		Text(text = text, style = MaterialTheme.typography.h4)
