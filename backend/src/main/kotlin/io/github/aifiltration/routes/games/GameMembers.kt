@@ -105,3 +105,49 @@ fun Route.members() = get("/games/{id}/members") {
 
 	call.respond(HttpStatusCode.OK, members)
 }
+
+fun Route.quitGame() = post("/games/{id}/quit") {
+	val userSession = call.sessions.get<UserSession>() ?: run {
+		call.respond(HttpStatusCode.Unauthorized, "You must be logged in to quit the game.")
+		return@post
+	}
+
+	val id = call.parameters["id"]?.toIntOrNull() ?: run {
+		call.respond(HttpStatusCode.BadRequest)
+		return@post
+	}
+
+	if (currentGame.id != id) {
+		call.respond(HttpStatusCode.Forbidden, "You can only quit the current game.")
+		return@post
+	}
+
+	val members = database.runQuery {
+		QueryDsl.from(Tables.userGame).where {
+			Tables.userGame.gameId eq id
+		}
+	}
+
+	val isMember = members.any { it.userId == userSession.userId }
+	val isWaiting = waitingList.any { (id) -> id == userSession.userId }
+
+	if (!isMember && !isWaiting) {
+		call.respond(HttpStatusCode.Conflict, "You are not a member of this game.")
+		return@post
+	}
+
+	if (isMember) {
+		database.runQuery {
+			QueryDsl.delete(Tables.userGame).where {
+				Tables.userGame.gameId eq id
+				Tables.userGame.userId eq userSession.userId
+			}
+		}
+	}
+
+	if (isWaiting) {
+		waitingList.removeIf { (id) -> id == userSession.userId }
+	}
+
+	call.respond(HttpStatusCode.OK)
+}

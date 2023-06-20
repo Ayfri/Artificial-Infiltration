@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.aifiltration.api.actions.logout
+import io.github.aifiltration.api.actions.quitGame
 import io.github.aifiltration.api.plugins.FileCookiesStorage
 import io.github.aifiltration.cacheAppData
 import io.github.aifiltration.composables.Page
@@ -116,6 +117,7 @@ fun GamePage(
 						) {
 							GameButton("Quit", red200) {
 								coroutineScope.launch {
+									quitGame(cacheAppData.currentGame!!.id)
 									logout()
 								}
 

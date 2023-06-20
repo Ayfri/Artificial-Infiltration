@@ -12,6 +12,7 @@ fun Application.gamesRoutes() {
 			game()
 			joinGame()
 			members()
+			quitGame()
 		}
 	}
 }

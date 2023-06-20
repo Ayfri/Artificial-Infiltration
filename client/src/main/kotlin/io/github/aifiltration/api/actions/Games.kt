@@ -12,3 +12,5 @@ suspend fun currentGame() = runCatching { get("/games/current").body<Game>() }
 suspend fun joinGame(id: Int) = runCatching { post("/games/$id/join") }
 
 suspend fun getMembers(id: Int) = runCatching { get("/games/$id/members").body<List<User>>() }
+
+suspend fun quitGame(id: Int) = runCatching { delete("/games/$id/quit") }
