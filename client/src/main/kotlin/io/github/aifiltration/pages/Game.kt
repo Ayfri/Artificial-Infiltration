@@ -24,6 +24,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.*
+import kotlin.time.Duration.Companion.seconds
 
 const val GAME_WIDTH_RATIO = 0.77f
 
@@ -74,17 +75,17 @@ fun GamePage(
 						while (true) {
 							val createdInstant = cacheAppData.currentGame!!.createdAt
 							val gameLength = cacheAppData.currentGame!!.length
-							timeLeft =
-								(gameLength - (System.currentTimeMillis() - createdInstant.toEpochMilliseconds()) / 1000).toInt()
+							val endInstant = createdInstant + gameLength.seconds
+
+							timeLeft = Clock.System.now().until(endInstant, DateTimeUnit.SECOND).toInt()
 
 							if (timeLeft <= 0) {
-								cacheAppData.currentGameFinished.value = true
-
 								while (cacheAppData.cooldown.value.isDistantPast) {
-									delay(150)
+									delay(300)
 									cacheAppData.updateCooldown()
 								}
 
+								cacheAppData.currentGameFinished.value = true
 								cacheAppData.updateMembers()
 								cacheAppData.updateVotes()
 

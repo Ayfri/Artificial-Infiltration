@@ -31,9 +31,7 @@ data class CacheAppData(
 	suspend fun joinCurrentGame() = joinGame(currentGame!!.id)
 
 	suspend fun updateCooldown() {
-		cooldown.value = cooldown().getOrThrow().also {
-			LOGGER.info("Cooldown updated to $it")
-		}
+		cooldown.value = cooldown().getOrThrow()
 	}
 
 	suspend fun updateCurrentGame() {

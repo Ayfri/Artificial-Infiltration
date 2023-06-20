@@ -82,9 +82,6 @@ fun Application.module() {
 				queries.reduce { acc, query -> acc.andThen(query) }
 			}
 
-			LOGGER.debug("Game $currentGame ended, cooldown ends at $gameCooldown")
-			// TODO: Fix issue where randomly game isn't finished correctly and client is stuck in cooldown with DISTANT_PAST
-
 			delay(PlayingGame.COOLDOWN_DURATION * 1000L)
 			gameCooldown = Instant.DISTANT_PAST
 		}
