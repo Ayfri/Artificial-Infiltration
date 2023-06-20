@@ -1,12 +1,11 @@
 package io.github.aifiltration.ai
 
-import io.github.aifiltration.anonymousNames
 import io.github.aifiltration.database.Tables
 import io.github.aifiltration.database.database
+import io.github.aifiltration.getAnonymousName
 import io.github.aifiltration.models.Message
 import io.github.aifiltration.models.message
 import io.github.aifiltration.models.user
-import io.github.aifiltration.usedNames
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -40,7 +39,7 @@ suspend fun queryChatCompletionMessages(
 	return messageAuthors.map { (user, messages) ->
 		messages.map { (id, content, _, _, timestamp) ->
 			ChatCompletionMessage(
-				author = usedNames.getOrPut(user.id) { anonymousNames[messageAuthors.keys.indexOf(user)] },
+				author = getAnonymousName(user.id),
 				content = content,
 				timestamp = timestamp,
 				fromAI = id == AI_ID

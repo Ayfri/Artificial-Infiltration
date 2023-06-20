@@ -39,7 +39,7 @@ fun GamePage(
 		val scrollState = rememberLazyListState()
 		Scaffold(
 			topBar = {
-				TopBar(cacheAppData.members.value.filter { it.id != cacheAppData.currentUser.id })
+				TopBar(cacheAppData.members.value.filter { it.id != cacheAppData.currentUser.id }.shuffled())
 			},
 			bottomBar = {
 				if (cacheAppData.currentGameFinished.value) return@Scaffold

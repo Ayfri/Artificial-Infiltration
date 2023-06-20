@@ -100,7 +100,11 @@ fun Route.members() = get("/games/{id}/members") {
 	}
 
 	val members = entityStore[Tables.user].mapIndexed { index, user ->
-		User(user.id, usedNames.getOrPut(user.id) { anonymousNames[index] })
+		User(
+			user.id,
+			getAnonymousName(index),
+			getAnonymousColor(user.id).rgb
+		)
 	}
 
 	call.respond(HttpStatusCode.OK, members)

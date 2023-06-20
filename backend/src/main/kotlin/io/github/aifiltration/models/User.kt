@@ -2,10 +2,7 @@ package io.github.aifiltration.models
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import org.komapper.annotation.KomapperAutoIncrement
-import org.komapper.annotation.KomapperEntity
-import org.komapper.annotation.KomapperId
-import org.komapper.annotation.KomapperTable
+import org.komapper.annotation.*
 
 @KomapperEntity
 @KomapperTable("users")
@@ -15,6 +12,8 @@ data class User(
 	@KomapperId
 	val id: Int = 0,
 	val username: String,
+	@KomapperIgnore
+	var color: Int = 0,
 	@Transient
 	val password: String = "",
 )

@@ -1,12 +1,12 @@
 package io.github.aifiltration.routes.messages
 
-import io.github.aifiltration.anonymousNames
 import io.github.aifiltration.database.Tables
 import io.github.aifiltration.database.database
+import io.github.aifiltration.getAnonymousColor
+import io.github.aifiltration.getAnonymousName
 import io.github.aifiltration.models.User
 import io.github.aifiltration.models.message
 import io.github.aifiltration.models.user
-import io.github.aifiltration.usedNames
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -48,7 +48,9 @@ fun Route.messages() = get("/games/{gameId}/messages") {
 				content = content,
 				author = User(
 					user.id,
-					usedNames.getOrPut(user.id) { anonymousNames[messageAuthors.keys.indexOf(user)] }),
+					getAnonymousName(user.id),
+					getAnonymousColor(user.id).rgb,
+				),
 				gameId = gameId,
 				timestamp = timestamp
 			)

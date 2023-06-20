@@ -2,6 +2,7 @@ package io.github.aifiltration.routes.users
 
 import io.github.aifiltration.database.Tables
 import io.github.aifiltration.database.database
+import io.github.aifiltration.getAnonymousColor
 import io.github.aifiltration.models._User.Companion.user
 import io.github.aifiltration.models.user
 import io.github.aifiltration.plugins.UserSession
@@ -28,6 +29,8 @@ fun Route.me() = get("/me") {
 		call.sessions.clear<UserSession>()
 		return@get
 	}
+
+	user.color = getAnonymousColor(user.id).rgb
 
 	call.respond(HttpStatusCode.OK, user)
 }

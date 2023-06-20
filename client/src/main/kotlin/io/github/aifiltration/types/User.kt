@@ -5,4 +5,4 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @Immutable
-data class User(val id: Int, val username: String)
+data class User(val id: Int, val username: String, val color: Int)

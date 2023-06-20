@@ -16,6 +16,7 @@ import io.github.aifiltration.pages.SignUpPage
 import io.github.aifiltration.storage.CacheAppData
 import io.github.aifiltration.storage.Storage
 import io.github.aifiltration.theme.AITheme
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 
@@ -47,7 +48,7 @@ fun main() = singleWindowApplication(
 							HttpStatusCode.OK
 						)
 					) throw Exception(
-						"Could not join game : ${joinResponse.status}"
+						"Could not join game : ${joinResponse.status} ${joinResponse.bodyAsText()}"
 					)
 					return@runBlocking
 				}

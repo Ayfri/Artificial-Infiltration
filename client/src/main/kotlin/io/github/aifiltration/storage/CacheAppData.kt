@@ -20,7 +20,7 @@ data class CacheAppData(
 	var cooldown: MutableState<Instant> = mutableStateOf(Instant.DISTANT_PAST),
 	var currentGame: Game? = null,
 	var currentGameFinished: MutableState<Boolean> = mutableStateOf(false),
-	var currentUser: User = User(0, "User 0"),
+	var currentUser: User = User(0, "User 0", 0),
 	var hasVoted: MutableState<Boolean> = mutableStateOf(false),
 	var isOnLeaderboard: MutableState<Boolean> = mutableStateOf(false),
 	var members: MutableState<List<User>> = mutableStateOf(listOf()),
