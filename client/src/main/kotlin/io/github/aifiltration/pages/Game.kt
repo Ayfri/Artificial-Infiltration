@@ -97,6 +97,7 @@ fun GamePage(
 								cacheAppData.cooldown.value = Instant.DISTANT_PAST
 								cacheAppData.hasVoted.value = false
 								storage.remove("voteTarget")
+								storage.save()
 
 								cacheAppData.updateCurrentGame()
 								cacheAppData.joinCurrentGame()

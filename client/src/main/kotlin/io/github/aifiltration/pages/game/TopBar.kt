@@ -82,7 +82,7 @@ fun MemberComponent(user: User) {
 			!cacheAppData.currentGameFinished.value
 		) 0.dp else 200.dp
 	)
-	var isVoted by rememberSaveable { mutableStateOf(storage["voteTarget"] == user.id.toString()) }
+	var isVoted by mutableStateOf(storage["voteTarget"] == user.id.toString())
 
 	Surface(
 		modifier = Modifier
