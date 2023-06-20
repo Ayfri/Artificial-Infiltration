@@ -37,7 +37,7 @@ fun WaitingRoom() {
 		)
 		val scrollState = rememberLazyListState()
 		Box(
-			modifier = Modifier.fillMaxHeight(.75f).padding(4.dp),
+			modifier = Modifier.fillMaxHeight(.7f).padding(4.dp),
 		) {
 			LazyColumn(
 				state = scrollState,

@@ -22,6 +22,7 @@ data class CacheAppData(
 	var currentGameFinished: MutableState<Boolean> = mutableStateOf(false),
 	var currentUser: User = User(0, "User 0"),
 	var hasVoted: MutableState<Boolean> = mutableStateOf(false),
+	var isOnLeaderboard: MutableState<Boolean> = mutableStateOf(false),
 	var members: MutableState<List<User>> = mutableStateOf(listOf()),
 	var messages: MutableState<List<Message>> = mutableStateOf(listOf()),
 	var votes: MutableState<List<Vote>> = mutableStateOf(listOf()),

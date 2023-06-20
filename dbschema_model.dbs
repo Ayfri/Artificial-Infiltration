@@ -4,6 +4,9 @@
 		<table name="badges" row_count="0" spec="" >
 			<column name="badge_id" type="INT" length="10" jt="4" mandatory="y" unsigned="y" />
 			<column name="user_id" type="INT" length="10" jt="4" mandatory="y" unsigned="y" />
+			<index name="fk_badges_users" unique="NORMAL" >
+				<column name="user_id" />
+			</index>
 			<fk name="fk_badges_users" to_schema="artificial_infiltration" to_table="users" delete_action="cascade" update_action="cascade" >
 				<fk_column name="user_id" pk="id" />
 			</fk>
@@ -34,6 +37,12 @@
 			<index name="pk_messages" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
+			<index name="fk_messages_users" unique="NORMAL" >
+				<column name="author_id" />
+			</index>
+			<index name="fk_messages_games" unique="NORMAL" >
+				<column name="game_id" />
+			</index>
 			<fk name="fk_messages_users" to_schema="artificial_infiltration" to_table="users" delete_action="cascade" update_action="cascade" >
 				<fk_column name="author_id" pk="id" />
 			</fk>
@@ -46,6 +55,12 @@
 			<column name="game_id" type="INT" length="10" jt="4" mandatory="y" unsigned="y" />
 			<column name="points" type="INT" length="10" jt="4" mandatory="y" unsigned="y" />
 			<column name="user_id" type="INT" length="10" jt="4" mandatory="y" unsigned="y" />
+			<index name="fk_user_games_games" unique="NORMAL" >
+				<column name="game_id" />
+			</index>
+			<index name="fk_user_games_users" unique="NORMAL" >
+				<column name="user_id" />
+			</index>
 			<fk name="fk_user_games_games" to_schema="artificial_infiltration" to_table="games" delete_action="cascade" update_action="cascade" >
 				<fk_column name="game_id" pk="id" />
 			</fk>
@@ -70,10 +85,22 @@
 				<identity><![CDATA[AUTO_INCREMENT]]></identity>
 			</column>
 			<column name="author_id" type="INT" length="10" jt="4" mandatory="y" unsigned="y" />
+			<column name="created_at" type="TIMESTAMP" jt="93" mandatory="y" >
+				<defo><![CDATA[current_timestamp()]]></defo>
+			</column>
 			<column name="game_id" type="INT" length="10" jt="4" mandatory="y" unsigned="y" />
 			<column name="target_id" type="INT" length="10" jt="4" mandatory="y" unsigned="y" />
 			<index name="pk_votes" unique="PRIMARY_KEY" >
 				<column name="id" />
+			</index>
+			<index name="fk_votes_users" unique="NORMAL" >
+				<column name="author_id" />
+			</index>
+			<index name="fk_votes_games" unique="NORMAL" >
+				<column name="game_id" />
+			</index>
+			<index name="fk_votes_users_0" unique="NORMAL" >
+				<column name="target_id" />
 			</index>
 			<fk name="fk_votes_users" to_schema="artificial_infiltration" to_table="users" delete_action="cascade" update_action="cascade" >
 				<fk_column name="author_id" pk="id" />

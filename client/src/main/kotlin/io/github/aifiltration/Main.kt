@@ -10,6 +10,7 @@ import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.singleWindowApplication
 import io.github.aifiltration.api.actions.login
 import io.github.aifiltration.pages.GamePage
+import io.github.aifiltration.pages.LeaderboardPage
 import io.github.aifiltration.pages.LoginPage
 import io.github.aifiltration.pages.SignUpPage
 import io.github.aifiltration.storage.CacheAppData
@@ -29,6 +30,11 @@ fun main() = singleWindowApplication(
 		val isLoggedIn = mutableStateOf(storage["loggedIn"] == "true" && !storage["username"].isNullOrBlank())
 
 		if (isLoggedIn.value) {
+			if (cacheAppData.isOnLeaderboard.value) {
+				LeaderboardPage(cacheAppData.isOnLeaderboard)
+				return@AITheme
+			}
+
 			runCatching {
 				runBlocking {
 					login()
@@ -46,9 +52,10 @@ fun main() = singleWindowApplication(
 					return@runBlocking
 				}
 
-				GamePage(isLoggedIn)
+				GamePage(isLoggedIn, cacheAppData.isOnLeaderboard)
 				return@AITheme
 			}.onFailure {
+				LOGGER.error("Could not join game", it)
 				cacheAppData.currentGame = null
 				isLoggedIn.value = false
 

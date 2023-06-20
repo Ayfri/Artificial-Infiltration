@@ -17,6 +17,7 @@ import io.github.aifiltration.cacheAppData
 import io.github.aifiltration.composables.Page
 import io.github.aifiltration.pages.game.*
 import io.github.aifiltration.storage
+import io.github.aifiltration.theme.pink300
 import io.github.aifiltration.theme.purple700
 import io.github.aifiltration.theme.red200
 import kotlinx.coroutines.delay
@@ -29,6 +30,7 @@ const val GAME_WIDTH_RATIO = 0.77f
 @Composable
 fun GamePage(
 	isLoggedIn: MutableState<Boolean>,
+	isOnLeaderboard: MutableState<Boolean>,
 ) {
 	Page {
 		cacheAppData.UpdateMembersEffect()
@@ -49,8 +51,11 @@ fun GamePage(
 					var timeLeft by remember { mutableStateOf(0) }
 
 					if (cacheAppData.currentGameFinished.value) {
+						if (cacheAppData.members.value.none { it.id == 10000000 }) runBlocking {
+							cacheAppData.updateMembers()
+							delay(100)
+						}
 						val members = cacheAppData.members.value
-						if (members.none { it.id == 10000000 }) runBlocking { cacheAppData.updateMembers() }
 						EndGame(members.first { it.id == 10000000 })
 					} else {
 						MessageList(scrollState)
@@ -115,6 +120,10 @@ fun GamePage(
 							modifier = Modifier.fillMaxSize(),
 							verticalArrangement = Arrangement.SpaceEvenly,
 						) {
+							GameButton("Leaderboard", pink300) {
+								isOnLeaderboard.value = true
+							}
+
 							GameButton("Quit", red200) {
 								coroutineScope.launch {
 									quitGame(cacheAppData.currentGame!!.id)
@@ -147,7 +156,7 @@ fun GameButton(text: String, color: Color, onClick: () -> Unit = {}) {
 		),
 		modifier = Modifier
 			.padding(16.dp)
-			.width(200.dp),
+			.width(224.dp),
 		onClick = onClick,
 		shape = MaterialTheme.shapes.medium
 	) {

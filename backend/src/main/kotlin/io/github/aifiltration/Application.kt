@@ -24,6 +24,9 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import org.komapper.core.dsl.QueryDsl
+import org.komapper.core.dsl.operator.desc
+import org.komapper.core.dsl.query.andThen
+import org.komapper.core.dsl.query.map
 import kotlin.time.Duration.Companion.seconds
 
 const val MAX_PLAYERS = 5
@@ -59,8 +62,28 @@ fun Application.module() {
 			}
 
 			delay(PlayingGame.GAME_DURATION * 1000L)
-
 			gameCooldown = Clock.System.now() + PlayingGame.COOLDOWN_DURATION.seconds
+
+			val votes = database.runQuery {
+				QueryDsl.from(Tables.vote).where {
+					Tables.vote.gameId eq currentGame.id
+					Tables.vote.targetId eq AI_ID
+				}.orderBy(Tables.vote.createdAt.desc())
+			}
+
+			val queries = votes.indices.map { index ->
+				QueryDsl.update(Tables.userGame).include(Tables.userGame.points).set {
+					Tables.userGame.points eq index + 1
+				}.where {
+					Tables.userGame.gameId eq currentGame.id
+					Tables.userGame.userId eq votes[index].authorId
+				}.map {}
+			}
+
+			if (queries.isNotEmpty()) database.runQuery {
+				queries.reduce { acc, query -> acc.andThen(query) }
+			}
+
 			delay(PlayingGame.COOLDOWN_DURATION * 1000L)
 			gameCooldown = Instant.DISTANT_PAST
 		}

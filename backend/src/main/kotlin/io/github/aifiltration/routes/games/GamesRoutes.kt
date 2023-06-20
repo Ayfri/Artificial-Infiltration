@@ -9,8 +9,9 @@ fun Application.gamesRoutes() {
 		auth {
 			cooldown()
 			currentGame()
-			game()
 			joinGame()
+			game()
+			leaderboard()
 			members()
 			quitGame()
 		}
