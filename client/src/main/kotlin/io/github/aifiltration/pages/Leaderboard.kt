@@ -16,21 +16,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.github.aifiltration.api.actions.leaderboard
 import io.github.aifiltration.composables.Page
-import io.github.aifiltration.theme.purple200
-import io.github.aifiltration.theme.purple400
-import io.github.aifiltration.theme.purple450
-import io.github.aifiltration.theme.red200
+import io.github.aifiltration.theme.*
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class LeaderboardEntry(
 	val gamePlayed: Int,
 	val points: Int,
-	val rank: Int,
 	val username: String,
 )
 
 var leaderboardList by mutableStateOf(listOf<LeaderboardEntry>())
+var sortedByPoints by mutableStateOf(true)
 
 @Composable
 fun LeaderboardPage(isOnLeaderboard: MutableState<Boolean>) {
@@ -43,25 +40,47 @@ fun LeaderboardPage(isOnLeaderboard: MutableState<Boolean>) {
 
 		Box(
 			contentAlignment = Alignment.TopCenter,
-			modifier = Modifier.fillMaxSize().padding(top = 150.dp),
+			modifier = Modifier.fillMaxSize(),
 		) {
 			Column(
 				horizontalAlignment = Alignment.CenterHorizontally,
-				modifier = Modifier.fillMaxWidth(.85f),
-				verticalArrangement = Arrangement.spacedBy(12.dp),
+				modifier = Modifier.fillMaxWidth(),
+				verticalArrangement = Arrangement.spacedBy(16.dp),
 			) {
-				LeaderboardTitle()
-				LazyColumn(
-					verticalArrangement = Arrangement.spacedBy(16.dp),
+				Row(
+					horizontalArrangement = Arrangement.SpaceEvenly,
+					modifier = Modifier.fillMaxWidth(.6f).padding(top = 64.dp, bottom = 32.dp),
 				) {
-					itemsIndexed(
-						items = leaderboardList,
-						key = { _, user -> user.username },
-					) { index, user ->
-						LeaderboardEntry(index, user)
+					SortingLeaderboardButton("Points") {
+						sortedByPoints = true
+					}
+
+					SortingLeaderboardButton("Games Played") {
+						sortedByPoints = false
+					}
+				}
+
+				Column(
+					horizontalAlignment = Alignment.CenterHorizontally,
+					modifier = Modifier.fillMaxWidth(.85f),
+					verticalArrangement = Arrangement.spacedBy(12.dp),
+				) {
+					LeaderboardTitle()
+					LazyColumn(
+						verticalArrangement = Arrangement.spacedBy(16.dp),
+					) {
+						itemsIndexed(
+							items = leaderboardList.sortedByDescending {
+								if (sortedByPoints) it.points else it.gamePlayed
+							},
+							key = { _, user -> user.username },
+						) { index, user ->
+							LeaderboardEntry(index + 1, user)
+						}
 					}
 				}
 			}
+
 		}
 	}
 }
@@ -124,9 +143,31 @@ fun RowScope.LeaderboardText(
 }
 
 @Composable
-fun LeaderboardEntry(index: Int, user: LeaderboardEntry) {
+fun SortingLeaderboardButton(
+	text: String,
+	enabled: Boolean = true,
+	onClick: () -> Unit,
+) {
+	Button(
+		colors = buttonColors(
+			backgroundColor = pink300,
+			contentColor = Color.White
+		),
+		contentPadding = PaddingValues(horizontal = 24.dp, vertical = 16.dp),
+		elevation = ButtonDefaults.elevation(4.dp),
+		enabled = enabled,
+		onClick = onClick,
+		shape = MaterialTheme.shapes.medium,
+	) {
+		Text(text = text, style = MaterialTheme.typography.h4)
+	}
+}
+
+@Composable
+fun LeaderboardEntry(rank: Int, user: LeaderboardEntry) {
 	Surface(
-		color = if (index % 2 == 0) purple400 else purple450,
+		color = if (rank % 2 == 0) purple400 else purple450,
+		contentColor = Color.White,
 		modifier = Modifier.fillMaxWidth(),
 		shape = MaterialTheme.shapes.medium,
 	) {
@@ -139,12 +180,12 @@ fun LeaderboardEntry(index: Int, user: LeaderboardEntry) {
 				modifier = Modifier.fillMaxWidth(0.15f),
 				verticalAlignment = Alignment.CenterVertically,
 			) {
-				Text(text = user.rank.toString(), style = MaterialTheme.typography.h5)
-				if (user.rank in 1..3) Icon(
+				Text(text = rank.toString(), style = MaterialTheme.typography.h5)
+				if (rank in 1..3) Icon(
 					contentDescription = "Back",
 					imageVector = Icons.Default.EmojiEvents,
 					modifier = Modifier.size(42.dp),
-					tint = when (user.rank) {
+					tint = when (rank) {
 						1 -> Color.Yellow
 						2 -> Color.Gray
 						3 -> Color(0xFFCD7F32)

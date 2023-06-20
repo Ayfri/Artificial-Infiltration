@@ -15,7 +15,6 @@ import org.komapper.core.dsl.QueryDsl
 data class LeaderboardEntryPayload(
 	val gamePlayed: Int,
 	val points: Int,
-	val rank: Int,
 	val username: String,
 )
 
@@ -27,17 +26,11 @@ fun Route.leaderboard() = get("/leaderboard") {
 	}
 
 	val userGames = entityStore.oneToMany(Tables.user, Tables.userGame)
-	val ranks = userGames.map { (user, userGame) ->
-		user.id to userGame.sumOf { it.points }
-	}.sortedByDescending { (_, points) -> points }.mapIndexed { index, (id, _) ->
-		id to index + 1
-	}.toMap()
 
 	val leaderboard = userGames.map { (user, userGame) ->
 		LeaderboardEntryPayload(
 			gamePlayed = userGame.size,
 			points = userGame.sumOf { it.points },
-			rank = ranks[user.id] ?: (ranks.size + 1),
 			username = user.username,
 		)
 	}
