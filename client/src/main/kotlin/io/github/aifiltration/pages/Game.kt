@@ -16,14 +16,14 @@ import io.github.aifiltration.cacheAppData
 import io.github.aifiltration.composables.Page
 import io.github.aifiltration.pages.game.*
 import io.github.aifiltration.storage
-import io.github.aifiltration.theme.green400
 import io.github.aifiltration.theme.purple700
 import io.github.aifiltration.theme.red200
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.*
 
-const val GAME_WIDTH_RATIO = 0.75f
+const val GAME_WIDTH_RATIO = 0.77f
 
 @Composable
 fun GamePage(
@@ -32,6 +32,7 @@ fun GamePage(
 	Page {
 		cacheAppData.UpdateMembersEffect()
 
+		val coroutineScope = rememberCoroutineScope()
 		val scrollState = rememberLazyListState()
 		Scaffold(
 			topBar = {
@@ -113,9 +114,8 @@ fun GamePage(
 							modifier = Modifier.fillMaxSize(),
 							verticalArrangement = Arrangement.SpaceEvenly,
 						) {
-							GameButton("Play Again", green400)
 							GameButton("Quit", red200) {
-								runBlocking {
+								coroutineScope.launch {
 									logout()
 								}
 
@@ -139,15 +139,15 @@ fun GamePage(
 @Composable
 fun GameButton(text: String, color: Color, onClick: () -> Unit = {}) {
 	Button(
-		modifier = Modifier
-			.padding(16.dp)
-			.width(200.dp),
-		shape = MaterialTheme.shapes.medium,
 		colors = buttonColors(
 			backgroundColor = color,
 			contentColor = Color.White,
 		),
-		onClick = onClick
+		modifier = Modifier
+			.padding(16.dp)
+			.width(200.dp),
+		onClick = onClick,
+		shape = MaterialTheme.shapes.medium
 	) {
 		Text(text, style = MaterialTheme.typography.button.copy(fontSize = 28.sp))
 	}
