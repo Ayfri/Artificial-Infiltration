@@ -2,6 +2,7 @@ package io.github.aifiltration.routes.votes
 
 import io.github.aifiltration.database.Tables
 import io.github.aifiltration.database.database
+import io.github.aifiltration.gameCooldown
 import io.github.aifiltration.models.Vote
 import io.github.aifiltration.models.vote
 import io.github.aifiltration.plugins.UserSession
@@ -11,6 +12,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
+import kotlinx.datetime.isDistantPast
 import kotlinx.serialization.Serializable
 import org.komapper.core.dsl.QueryDsl
 import org.komapper.core.dsl.query.firstOrNull
@@ -29,6 +31,11 @@ fun Route.vote() = post("/games/{gameId}/vote") {
 		return@post
 	}
 
+	if (!gameCooldown.isDistantPast) {
+		call.respond(HttpStatusCode.Forbidden, "Game is in cooldown.")
+		return@post
+	}
+
 	val vote = call.receive<CreateVotePayload>()
 
 	val currentVote = database.runQuery {
@@ -44,14 +51,19 @@ fun Route.vote() = post("/games/{gameId}/vote") {
 		return@post
 	}
 
-	database.runQuery {
-		QueryDsl.insert(Tables.vote).single(
-			Vote(
-				gameId = gameId,
-				authorId = userId,
-				targetId = vote.targetId
+	runCatching {
+		database.runQuery {
+			QueryDsl.insert(Tables.vote).single(
+				Vote(
+					gameId = gameId,
+					authorId = userId,
+					targetId = vote.targetId
+				)
 			)
-		)
+		}
+	}.onFailure {
+		call.respond(HttpStatusCode.BadRequest, "Player does not exist.")
+		return@post
 	}
 
 	call.respond(HttpStatusCode.OK)

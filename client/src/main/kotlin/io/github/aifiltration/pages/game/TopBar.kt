@@ -10,8 +10,11 @@ import androidx.compose.material.ButtonDefaults.buttonColors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -57,24 +60,28 @@ fun TopBar(users: List<User>) {
 
 @Composable
 fun MemberList(users: List<User>) {
-	val hasVoted = rememberSaveable { mutableStateOf(false) }
-
 	Row(
 		horizontalArrangement = Arrangement.spacedBy(75.dp),
 		verticalAlignment = Alignment.CenterVertically,
 		modifier = Modifier.wrapContentSize()
 	) {
 		users.forEach {
-			MemberComponent(it, hasVoted)
+			MemberComponent(it)
 		}
 	}
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun MemberComponent(user: User, hasVoted: MutableState<Boolean>) {
+fun MemberComponent(user: User) {
 	var hover by rememberSaveable { mutableStateOf(false) }
-	val animatedSizeDp by animateDpAsState(targetValue = if (hover && !hasVoted.value) 0.dp else 200.dp)
+	val animatedSizeDp by animateDpAsState(
+		targetValue = if (
+			hover &&
+			!cacheAppData.hasVoted.value &&
+			!cacheAppData.currentGameFinished.value
+		) 0.dp else 200.dp
+	)
 	var isVoted by rememberSaveable { mutableStateOf(storage["voteTarget"] == user.id.toString()) }
 
 	Surface(
@@ -116,7 +123,7 @@ fun MemberComponent(user: User, hasVoted: MutableState<Boolean>) {
 							val response = vote(gameId, user.id).getOrThrow()
 							if (response.status.isSuccess()) {
 								storage["voteTarget"] = user.id.toString()
-								hasVoted.value = true
+								cacheAppData.hasVoted.value = true
 								isVoted = true
 							}
 						}

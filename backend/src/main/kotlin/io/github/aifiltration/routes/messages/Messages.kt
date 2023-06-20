@@ -46,7 +46,9 @@ fun Route.messages() = get("/games/{gameId}/messages") {
 			MessagePayload(
 				id = id,
 				content = content,
-				author = User(user.id, usedNames.getOrPut(id) { anonymousNames[messageAuthors.keys.indexOf(user)] }),
+				author = User(
+					user.id,
+					usedNames.getOrPut(user.id) { anonymousNames[messageAuthors.keys.indexOf(user)] }),
 				gameId = gameId,
 				timestamp = timestamp
 			)

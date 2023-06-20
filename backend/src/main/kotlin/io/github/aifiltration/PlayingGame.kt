@@ -30,9 +30,11 @@ class PlayingGame {
 		"PlayingGame(id=$id, createdAt=$createdAt)"
 
 	companion object {
-		const val GAME_DURATION = 300
+		const val GAME_DURATION = 180
+		const val COOLDOWN_DURATION = 30
+
 		val AI_MESSAGE_DELAY
-			get() = Random.nextInt(5, 10)
+			get() = Random.nextInt(4, 12)
 	}
 }
 

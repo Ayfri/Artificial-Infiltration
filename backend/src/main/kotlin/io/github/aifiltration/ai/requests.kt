@@ -4,7 +4,6 @@ import com.aallam.openai.api.BetaOpenAI
 import com.aallam.openai.api.chat.ChatMessage
 import com.aallam.openai.api.chat.ChatRole
 import com.aallam.openai.api.chat.chatCompletionRequest
-import io.github.aifiltration.LOGGER
 import io.github.aifiltration.usedNames
 import java.text.Normalizer
 
@@ -41,10 +40,6 @@ suspend fun chatCompletionRequest(
 			name = it.author,
 		)
 	}
-
-	LOGGER.info(
-		"Prompt messages: ${promptMessages.joinToString("\n") { "${it.name}: ${it.content}" }}"
-	)
 
 	messages = promptMessages.map {
 		ChatMessage(

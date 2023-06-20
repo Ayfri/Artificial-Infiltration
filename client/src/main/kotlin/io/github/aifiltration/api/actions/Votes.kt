@@ -14,3 +14,7 @@ suspend fun vote(gameId: Int, targetId: Int) = runCatching {
 		setBody(CreateVotePayload(targetId))
 	}
 }
+
+suspend fun getVotes(gameId: Int) = runCatching {
+	get("/games/$gameId/votes")
+}

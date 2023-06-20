@@ -8,14 +8,15 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.aifiltration.types.User
 
 @Composable
-fun UserAvatar(user: User) {
+fun UserAvatar(user: User, scale: Dp = 64.dp) {
 	Box(
 		modifier = Modifier
-			.size(64.dp)
+			.size(scale)
 			.padding(8.dp)
 			.background(randomColorFromUser(user), shape = CircleShape)
 	)

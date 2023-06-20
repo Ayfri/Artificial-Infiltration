@@ -7,6 +7,7 @@ import io.ktor.server.routing.*
 fun Application.gamesRoutes() {
 	routing {
 		auth {
+			cooldown()
 			currentGame()
 			game()
 			joinGame()

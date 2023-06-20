@@ -9,9 +9,9 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.singleWindowApplication
 import io.github.aifiltration.api.actions.login
+import io.github.aifiltration.pages.GamePage
 import io.github.aifiltration.pages.LoginPage
 import io.github.aifiltration.pages.SignUpPage
-import io.github.aifiltration.pages.game.GamePage
 import io.github.aifiltration.storage.CacheAppData
 import io.github.aifiltration.storage.Storage
 import io.github.aifiltration.theme.AITheme

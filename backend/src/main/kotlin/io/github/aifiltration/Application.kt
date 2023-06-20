@@ -2,7 +2,6 @@
 
 package io.github.aifiltration
 
-import com.aallam.openai.api.BetaOpenAI
 import io.github.aifiltration.ai.AI_ID
 import io.github.aifiltration.ai.chatCompletionRequest
 import io.github.aifiltration.ai.queryChatCompletionMessages
@@ -18,13 +17,19 @@ import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
 import io.ktor.util.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import org.komapper.core.dsl.QueryDsl
+import kotlin.time.Duration.Companion.seconds
 
 const val MAX_PLAYERS = 5
 
 lateinit var currentGame: PlayingGame
+var gameCooldown = Instant.DISTANT_PAST
 val waitingList = mutableSetOf<User>()
 
 fun main() {
@@ -37,18 +42,13 @@ fun main() {
 	).start(wait = true)
 }
 
-@OptIn(BetaOpenAI::class, InternalAPI::class)
+@OptIn(InternalAPI::class)
 fun Application.module() {
 	configureAuth()
 	configureContentNegotiation()
 	configureMonitoring()
 	configureRouting()
 	configureSessions()
-
-	runBlocking {
-//		println(models().sortedBy { it.id.id }.joinToString("\n"))
-//		exitProcess(0)
-	}
 
 	val gameCreationScope = CoroutineScope(Dispatchers.Default)
 	gameCreationScope.launch {
@@ -59,6 +59,10 @@ fun Application.module() {
 			}
 
 			delay(PlayingGame.GAME_DURATION * 1000L)
+
+			gameCooldown = Clock.System.now() + PlayingGame.COOLDOWN_DURATION.seconds
+			delay(PlayingGame.COOLDOWN_DURATION * 1000L)
+			gameCooldown = Instant.DISTANT_PAST
 		}
 	}
 
@@ -90,7 +94,7 @@ fun Application.module() {
 			runCatching {
 				val chatCompletionMessages = queryChatCompletionMessages(currentGame.id)
 				val aiMessage = chatCompletionRequest(chatCompletionMessages)!!
-				LOGGER.debug("AI message: $aiMessage")
+
 				database.runQuery {
 					QueryDsl.insert(Tables.message).single(
 						Message(

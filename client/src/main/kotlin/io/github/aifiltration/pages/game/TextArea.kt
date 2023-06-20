@@ -19,6 +19,7 @@ import io.github.aifiltration.cacheAppData
 import io.github.aifiltration.composables.UserAvatar
 import io.github.aifiltration.composables.moveFocusOnTab
 import io.github.aifiltration.composables.onEnterKeyPressed
+import io.github.aifiltration.pages.GAME_WIDTH_RATIO
 import io.github.aifiltration.theme.purple700
 import io.github.aifiltration.theme.purple800
 import io.github.aifiltration.theme.purple900
@@ -38,7 +39,7 @@ fun TextArea(scrollState: LazyListState) {
 
 	Row(
 		modifier = Modifier
-			.fillMaxWidth(.75f)
+			.fillMaxWidth(GAME_WIDTH_RATIO)
 			.background(purple800)
 			.padding(horizontal = 16.dp, vertical = 24.dp),
 		horizontalArrangement = Arrangement.SpaceBetween,

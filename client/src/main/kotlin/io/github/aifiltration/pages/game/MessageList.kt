@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import io.github.aifiltration.cacheAppData
 import io.github.aifiltration.composables.MessageBox
 import io.github.aifiltration.composables.UserAvatar
+import io.github.aifiltration.pages.GAME_WIDTH_RATIO
 import io.github.aifiltration.types.Message
 
 @Composable
@@ -17,7 +18,7 @@ fun MessageList(scrollState: LazyListState) {
 	cacheAppData.UpdateMessagesEffect()
 
 	LazyColumn(
-		modifier = Modifier.fillMaxWidth(.75f).padding(horizontal = 16.dp),
+		modifier = Modifier.fillMaxWidth(GAME_WIDTH_RATIO).padding(horizontal = 16.dp),
 		verticalArrangement = Arrangement.spacedBy(12.dp),
 		state = scrollState,
 		reverseLayout = true

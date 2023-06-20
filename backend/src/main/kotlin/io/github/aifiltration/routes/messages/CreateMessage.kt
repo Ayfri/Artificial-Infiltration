@@ -2,6 +2,7 @@ package io.github.aifiltration.routes.messages
 
 import io.github.aifiltration.database.Tables
 import io.github.aifiltration.database.database
+import io.github.aifiltration.gameCooldown
 import io.github.aifiltration.models.Message
 import io.github.aifiltration.models.game
 import io.github.aifiltration.models.message
@@ -14,6 +15,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
+import kotlinx.datetime.isDistantPast
 import kotlinx.serialization.Serializable
 import org.komapper.core.dsl.QueryDsl
 
@@ -32,6 +34,11 @@ fun Route.createMessage() = post("/games/{gameId}/messages/create") {
 	val userSession = call.sessions.get<UserSession>()
 	if (userSession == null) {
 		call.respond(HttpStatusCode.Unauthorized, "You must be logged in to create a message.")
+		return@post
+	}
+
+	if (!gameCooldown.isDistantPast) {
+		call.respond(HttpStatusCode.Forbidden, "Game is in cooldown.")
 		return@post
 	}
 

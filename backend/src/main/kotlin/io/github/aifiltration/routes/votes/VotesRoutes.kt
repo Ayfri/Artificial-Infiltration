@@ -8,6 +8,7 @@ fun Application.votesRoutes() {
 	routing {
 		auth {
 			vote()
+			votes()
 		}
 	}
 }

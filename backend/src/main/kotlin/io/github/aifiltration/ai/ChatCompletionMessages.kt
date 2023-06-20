@@ -40,7 +40,7 @@ suspend fun queryChatCompletionMessages(
 	return messageAuthors.map { (user, messages) ->
 		messages.map { (id, content, _, _, timestamp) ->
 			ChatCompletionMessage(
-				author = usedNames.getOrPut(id) { anonymousNames[messageAuthors.keys.indexOf(user)] },
+				author = usedNames.getOrPut(user.id) { anonymousNames[messageAuthors.keys.indexOf(user)] },
 				content = content,
 				timestamp = timestamp,
 				fromAI = id == AI_ID

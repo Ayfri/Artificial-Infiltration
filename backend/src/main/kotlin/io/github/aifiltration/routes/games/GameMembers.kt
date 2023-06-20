@@ -13,6 +13,7 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
+import kotlinx.datetime.isDistantPast
 import org.komapper.core.UniqueConstraintException
 import org.komapper.core.dsl.QueryDsl
 import org.komapper.core.dsl.query.first
@@ -30,6 +31,11 @@ fun Route.joinGame() = post("/games/{id}/join") {
 
 	if (currentGame.id != id) {
 		call.respond(HttpStatusCode.Forbidden, "You can only join the current game.")
+		return@post
+	}
+
+	if (!gameCooldown.isDistantPast) {
+		call.respond(HttpStatusCode.Forbidden, "Game is in cooldown.")
 		return@post
 	}
 
@@ -94,7 +100,7 @@ fun Route.members() = get("/games/{id}/members") {
 	}
 
 	val members = entityStore[Tables.user].mapIndexed { index, user ->
-		User(user.id, usedNames.getOrPut(id) { anonymousNames[index] })
+		User(user.id, usedNames.getOrPut(user.id) { anonymousNames[index] })
 	}
 
 	call.respond(HttpStatusCode.OK, members)
