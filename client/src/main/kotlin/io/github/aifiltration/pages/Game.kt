@@ -22,7 +22,6 @@ import io.github.aifiltration.theme.purple700
 import io.github.aifiltration.theme.red200
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.*
 import kotlin.time.Duration.Companion.seconds
 
@@ -52,7 +51,7 @@ fun GamePage(
 					var timeLeft by remember { mutableStateOf(0) }
 
 					if (cacheAppData.currentGameFinished.value) {
-						if (cacheAppData.members.value.none { it.id == 10000000 }) runBlocking {
+						if (cacheAppData.members.value.none { it.id == 10000000 }) coroutineScope.launch {
 							cacheAppData.updateMembers()
 							delay(100)
 						}

@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.layout.ContentScale
@@ -80,7 +81,7 @@ fun MemberComponent(user: User) {
 			hover &&
 			!cacheAppData.hasVoted.value &&
 			!cacheAppData.currentGameFinished.value
-		) 0.dp else 200.dp
+		) 0.dp else 220.dp
 	)
 	var isVoted by mutableStateOf(storage["voteTarget"] == user.id.toString())
 
@@ -94,7 +95,7 @@ fun MemberComponent(user: User) {
 		Row(
 			modifier = Modifier
 				.padding(end = 16.dp)
-				.width(175.dp),
+				.width(200.dp),
 			verticalAlignment = Alignment.CenterVertically
 		) {
 			UserAvatar(user)
@@ -102,8 +103,10 @@ fun MemberComponent(user: User) {
 				modifier = Modifier.fillMaxWidth()
 			) {
 				Text(
-					user.username,
+					color = Color.White,
 					modifier = Modifier.fillMaxWidth().align(Alignment.Center),
+					fontSize = 14.sp,
+					text = user.username,
 					textAlign = TextAlign.Center
 				)
 
