@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.loadImageBitmap
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,6 +30,7 @@ import androidx.compose.ui.zIndex
 import io.github.aifiltration.api.actions.vote
 import io.github.aifiltration.cacheAppData
 import io.github.aifiltration.composables.UserAvatar
+import io.github.aifiltration.resourceFile
 import io.github.aifiltration.storage
 import io.github.aifiltration.theme.green400
 import io.github.aifiltration.theme.purple650
@@ -50,7 +51,7 @@ fun TopBar(users: List<User>) {
 		verticalAlignment = Alignment.CenterVertically
 	) {
 		Image(
-			painter = painterResource("images/skull.png"),
+			bitmap = loadImageBitmap(resourceFile("images/skull.png").inputStream()),
 			contentDescription = "Logo",
 			contentScale = ContentScale.FillWidth,
 			modifier = Modifier.size(96.dp)
