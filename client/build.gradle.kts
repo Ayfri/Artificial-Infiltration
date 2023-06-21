@@ -1,4 +1,3 @@
-val dotenvVersion = project.ext["dotenv.version"] as String
 val composeVersion = project.ext["compose.version"] as String
 val ktorVersion = project.ext["ktor.version"] as String
 val kotlinxDateTimeVersion = project.ext["kotlinx.datetime.version"] as String
@@ -20,7 +19,7 @@ dependencies {
 	implementation(compose.desktop.currentOs)
 	implementation(compose.materialIconsExtended)
 	implementation(compose.preview)
-	
+
 	implementation("org.jetbrains.kotlinx:kotlinx-datetime:$kotlinxDateTimeVersion")
 
 	implementation("io.ktor:ktor-client-auth:$ktorVersion")
@@ -30,8 +29,6 @@ dependencies {
 	implementation("io.ktor:ktor-client-logging:$ktorVersion")
 	implementation("ch.qos.logback:logback-classic:$logbackVersion")
 	implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
-
-	implementation("io.github.cdimascio:dotenv-kotlin:$dotenvVersion")
 }
 
 compose.desktop {
