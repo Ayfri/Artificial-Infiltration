@@ -46,6 +46,8 @@ compose.desktop {
 
 			includeAllModules = true
 			targetFormats(TargetFormat.Exe)
+
+			appResourcesRootDir.set(project.layout.projectDirectory.dir("resources"))
 		}
 	}
 }
